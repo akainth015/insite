@@ -1,4 +1,4 @@
-import React, {Component, useState, useRef, useCallback} from "react";
+import React, {useState, useRef, useCallback} from "react";
 import ReactFlow, {
     ReactFlowProvider,
     useEdgesState,
@@ -8,7 +8,7 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 
-import SideBar from "./Components/SIdeBar";
+import Sidebar from "./Components/Sidebar";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -20,7 +20,7 @@ export default function Canvas() {
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
     const onConnect = useCallback(
         (params) => setEdges((edges) => addEdge(params, edges)),
-        []
+        [setEdges]
     );
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -51,7 +51,7 @@ export default function Canvas() {
 
             setNodes((nodes) => nodes.concat(newNode));
         },
-        [reactFlowInstance]
+        [reactFlowInstance, setNodes]
     );
 
     return (
@@ -73,7 +73,7 @@ export default function Canvas() {
                         <Controls/>
                     </ReactFlow>
                 </div>
-                <SideBar/>
+                <Sidebar/>
             </ReactFlowProvider>
         </div>
     );

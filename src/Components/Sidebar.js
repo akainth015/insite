@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function SideBar() {
+export default function Sidebar() {
     const onDragStart = (event, nodeType) => {
         event.dataTransfer.setData("application/reactflow", nodeType);
         event.dataTransfer.effectAllowed = "move";
