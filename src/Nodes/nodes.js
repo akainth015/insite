@@ -17,9 +17,14 @@ import Normalization from "./Modification/MinMaxNormalization";
 import { ButtonNode } from "./Input/ButtonNode";
 import { Code, DataObject, Webhook } from "@mui/icons-material";
 import MergeNode from "./Modification/MergeNode";
-import { Tooltip } from "@mui/material";
 import EdgeDetectionNode from "./Modification/EdgeDetectionNode";
 import AggregateNode from "./Modification/AggregateNode";
+import TextTokenization from "./Modification/TextTokenization";
+import TextInputNode from "./Input/TextInputNode";
+import HistogramChart from "./Output/HistogramChart";
+import LineChart from "./Output/LineChart";
+import WordCloudChart from "./Output/WordCloudChart";
+import { Tooltip } from "@mui/material";
 
 export const nodeIcons = {
     "CSV File": Code,
@@ -38,6 +43,8 @@ export const modificationNodeTypes = {
     "Handle Missing Values": FillMissing,
     Normalization: Normalization,
     "Filter Columns": FilterColumnsNode,
+    "Drop Columns": FilterColumnsNode,
+    "Text Tokenization": TextTokenization,
 };
 
 export const inputNodeTypes = {
@@ -45,6 +52,7 @@ export const inputNodeTypes = {
     "Web Hook": WebHookNode,
     "CSV File": CsvNode,
     "JSON File": JsonNode,
+    "Text File": TextInputNode,
 };
 
 export const outputNodeTypes = {
@@ -52,6 +60,9 @@ export const outputNodeTypes = {
     Clock: ClockNode,
     "Text Display": TextNode,
     Correlation: Correlation,
+    "Histogram Chart Display": HistogramChart,
+    "Line Chart Display": LineChart,
+    "World Cloud Display": WordCloudChart,
 };
 
 let nodeStates = {};
