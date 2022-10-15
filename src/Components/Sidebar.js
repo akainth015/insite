@@ -1,5 +1,4 @@
 import React from "react";
-import CSVNode from "../Nodes/CSVNode";
 
 export default function Sidebar() {
     const onDragStart = (event, nodeType) => {

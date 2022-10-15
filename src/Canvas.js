@@ -4,9 +4,9 @@ import "reactflow/dist/style.css";
 
 import Sidebar from "./Components/Sidebar";
 import CSVNode from "./Nodes/CSVNode";
-
 let id = 0;
 const getId = () => `dndnode_${id++}`;
+const nodeTypes = { csv: CSVNode };
 
 export default function Canvas() {
     const reactFlowWrapper = useRef(null);
@@ -38,7 +38,7 @@ export default function Canvas() {
             if (type === "CSVNode") {
                 const newNode = {
                     id: getId(),
-                    type: "default",
+                    type: "csv",
                     position,
                     data: { label: <CSVNode /> },
                 };
@@ -73,6 +73,7 @@ export default function Canvas() {
                         onDragOver={onDragOver}
                         onLoad={setReactFlowInstance}
                         onInit={setReactFlowInstance}
+                        nodeTypes={nodeTypes}
                         fitView
                     >
                         <Controls />

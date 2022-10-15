@@ -1,7 +1,8 @@
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 import { Handle } from "reactflow";
+import { Box, Typography } from "@mui/material";
 
-export default memo(() => {
+export default function CSVNode() {
     const [file, setFile] = useState(null);
     const fileReader = new FileReader();
     const onFileChange = (e) => {
@@ -22,11 +23,23 @@ export default memo(() => {
 
     return (
         <>
-            <div>CSV Input Node</div>
-            <form>
-                <input type="file" id="csvFile" name="csvFile" accept=".csv" onChange={onFileChange} />
-                <button onClick={handleOnSubmit}>Import CSV</button>
-            </form>
+            <Box
+                sx={{
+                    width: 190,
+                    height: 80,
+                    backgroundColor: "white",
+                    padding: 2,
+                    borderRadius: 2,
+                    alignItems: "center",
+                    alignText: "center",
+                }}
+            >
+                <Typography variant="h7">CSV Node</Typography>
+                <form>
+                    <input type="file" id="csvFile" name="csvFile" accept=".csv" onChange={onFileChange} />
+                    <button onClick={handleOnSubmit}>Import CSV</button>
+                </form>
+            </Box>
             <Handle
                 type="source"
                 position="right"
@@ -36,4 +49,4 @@ export default memo(() => {
             />
         </>
     );
-});
+}
