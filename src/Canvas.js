@@ -1,14 +1,9 @@
-import React, {useState, useRef, useCallback} from "react";
-import ReactFlow, {
-    ReactFlowProvider,
-    useEdgesState,
-    useNodesState,
-    addEdge,
-    Controls,
-} from "reactflow";
+import React, { useState, useRef, useCallback } from "react";
+import ReactFlow, { ReactFlowProvider, useEdgesState, useNodesState, addEdge, Controls } from "reactflow";
 import "reactflow/dist/style.css";
 
 import Sidebar from "./Components/Sidebar";
+import CSVNode from "./Nodes/CSVNode";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -18,10 +13,7 @@ export default function Canvas() {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
-    const onConnect = useCallback(
-        (params) => setEdges((edges) => addEdge(params, edges)),
-        [setEdges]
-    );
+    const onConnect = useCallback((params) => setEdges((edges) => addEdge(params, edges)), [setEdges]);
     const onDragOver = useCallback((event) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = "move";
@@ -42,11 +34,24 @@ export default function Canvas() {
                 x: event.clientX - reactFlowBounds.left,
                 y: event.clientY - reactFlowBounds.top,
             });
+
+            if (type === "CSVNode") {
+                const newNode = {
+                    id: getId(),
+                    type: "default",
+                    position,
+                    data: { label: <CSVNode /> },
+                };
+
+                setNodes((nodes) => nodes.concat(newNode));
+                return;
+            }
+
             const newNode = {
                 id: getId(),
                 type,
                 position,
-                data: {label: `${type} node`},
+                data: { label: `${type} node` },
             };
 
             setNodes((nodes) => nodes.concat(newNode));
@@ -70,10 +75,10 @@ export default function Canvas() {
                         onInit={setReactFlowInstance}
                         fitView
                     >
-                        <Controls/>
+                        <Controls />
                     </ReactFlow>
                 </div>
-                <Sidebar/>
+                <Sidebar />
             </ReactFlowProvider>
         </div>
     );
