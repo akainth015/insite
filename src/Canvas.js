@@ -4,9 +4,10 @@ import "reactflow/dist/style.css";
 
 import Sidebar from "./Components/Sidebar";
 import CSVNode from "./Nodes/CSVNode";
+import TableDisplayNode from "./Nodes/TableDisplayNode";
 let id = 0;
-const getId = () => `dndnode_${id++}`;
-const nodeTypes = { csv: CSVNode };
+const getId = () => `node_${id++}`;
+const nodeTypes = { csv: CSVNode, table: TableDisplayNode };
 
 export default function Canvas() {
     const reactFlowWrapper = useRef(null);
@@ -40,7 +41,19 @@ export default function Canvas() {
                     id: getId(),
                     type: "csv",
                     position,
-                    data: { label: <CSVNode /> },
+                    data: { label: <CSVNode />, outputData: null },
+                };
+
+                setNodes((nodes) => nodes.concat(newNode));
+                return;
+            }
+
+            if (type === "TableDisplayNode") {
+                const newNode = {
+                    id: getId(),
+                    type: "table",
+                    position,
+                    data: { label: <TableDisplayNode />, inputData: null },
                 };
 
                 setNodes((nodes) => nodes.concat(newNode));

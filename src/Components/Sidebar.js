@@ -12,6 +12,13 @@ export default function Sidebar() {
             <div className="dndnode CSVNode" onDragStart={(event) => onDragStart(event, "CSVNode")} draggable>
                 CSV Input Node
             </div>
+            <div
+                className="dndnode TableDisplayNode"
+                onDragStart={(event) => onDragStart(event, "TableDisplayNode")}
+                draggable
+            >
+                Table Node
+            </div>
             <div className="dndnode input" onDragStart={(event) => onDragStart(event, "input")} draggable>
                 Input Node
             </div>
