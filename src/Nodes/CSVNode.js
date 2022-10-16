@@ -14,8 +14,21 @@ export default function CSVNode() {
         e.preventDefault();
         if (file) {
             fileReader.onload = function (e) {
-                const csvOutput = e.target.result;
-                console.log(csvOutput);
+                let csv = fileReader.result;
+                let lines = csv.split("\n");
+                let result = [];
+                let headers = lines[0].split(",");
+                for (let i = 1; i < lines.length; i++) {
+                    let obj = {};
+                    let currentline = lines[i].split(",");
+                    for (let j = 0; j < headers.length; j++) {
+                        obj[headers[j]] = currentline[j];
+                    }
+                    result.push(obj);
+                }
+                //return result; //JavaScript object
+                result = JSON.stringify(result); //JSON
+                console.log(result);
             };
             fileReader.readAsText(file);
         }

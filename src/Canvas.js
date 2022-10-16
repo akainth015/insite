@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from "react";
-import ReactFlow, { ReactFlowProvider, useEdgesState, useNodesState, addEdge, Controls } from "reactflow";
+import ReactFlow, { Background, ReactFlowProvider, useEdgesState, useNodesState, addEdge, Controls } from "reactflow";
 import "reactflow/dist/style.css";
 
 import Sidebar from "./Components/Sidebar";
@@ -76,6 +76,7 @@ export default function Canvas() {
                         nodeTypes={nodeTypes}
                         fitView
                     >
+                        <Background />
                         <Controls />
                     </ReactFlow>
                 </div>
