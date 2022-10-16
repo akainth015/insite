@@ -7,15 +7,18 @@ export default function TableDisplayNode(data) {
     const nodes = useNodes();
 
     useEffect(() => {
+        console.log("useeffect nodes");
         const thisNode = nodes.find((node) => node.id === data.id);
         if (thisNode.data.inputData) {
             setInputData(thisNode.data.inputData.slice(0, 10));
         }
-    }, [nodes]);
+    }, [data.id, nodes]);
 
     const onConnect = (params) => {
         const source = nodes.find((node) => node.id === params.source);
-        setInputData(source.data.outputData.slice(0, 10));
+        if (source.data.outputData) {
+            setInputData(source.data.outputData.slice(0, 10));
+        }
     };
 
     return (

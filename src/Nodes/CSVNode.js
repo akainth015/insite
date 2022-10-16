@@ -5,6 +5,7 @@ import { Box, Typography } from "@mui/material";
 export default function CSVNode(data) {
     const [file, setFile] = useState(null);
     const [thisData, setThisData] = useState(undefined);
+    const [target, setTarget] = useState([]);
     const flowInstance = useReactFlow();
     const fileReader = new FileReader();
     const onFileChange = (e) => {
@@ -18,20 +19,25 @@ export default function CSVNode(data) {
         const thisNode = nodes.find((node) => node.id === data.id);
         thisNode.data.outputData = fileData;
         nodes[thisNode] = thisNode;
-        flowInstance.setNodes(nodes);
-
         setThisData(fileData);
-        console.log(nodes);
+
+        if (target) {
+            const targetNode = nodes.find((node) => node.id === target);
+            targetNode.data.inputData = thisData;
+            nodes[targetNode] = targetNode;
+        }
+
+        flowInstance.setNodes(nodes);
     };
 
     // I want to set the inputData of the targetNode to data
     const onConnect = (params, fileData) => {
         const nodes = flowInstance.getNodes();
         const targetNode = nodes.find((node) => node.id === params.target);
+        setTarget(params.target);
         targetNode.data.inputData = thisData;
         nodes[targetNode] = targetNode;
         flowInstance.setNodes(nodes);
-        console.log(nodes);
     };
 
     const handleOnSubmit = (e) => {
