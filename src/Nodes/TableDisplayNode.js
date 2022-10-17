@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Handle, useNodes, useEdges, useReactFlow } from "reactflow";
 import { Box, Typography } from "@mui/material";
+import Waiting from "../Components/Waiting";
 
 export default function TableDisplayNode(data) {
     const [inputData, setInputData] = useState(data.inputData);
@@ -41,10 +42,13 @@ export default function TableDisplayNode(data) {
                     backgroundColor: "white",
                     padding: 2,
                     borderRadius: 2,
+                    alignItems: "center",
+                    justifyContent: "center",
                 }}
             >
                 <Typography variant="h7">Table Node</Typography>
-                {inputData !== undefined && (
+
+                {inputData ? (
                     <table>
                         <tbody>
                             <tr key={"header"}>
@@ -61,6 +65,8 @@ export default function TableDisplayNode(data) {
                             ))}
                         </tbody>
                     </table>
+                ) : (
+                    <Waiting />
                 )}
             </Box>
             <Handle
