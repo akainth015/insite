@@ -18,8 +18,7 @@ export default function CSVNode(data) {
         const thisNode = nodes.find((node) => node.id === data.id);
         thisNode.data.outputData = fileData;
         setThisData(fileData);
-
-        if (thisNode.data.target !== undefined) {
+        if (thisNode.data.target !== null) {
             const targetNode = nodes.find((node) => node.id === thisNode.data.target);
             targetNode.data.inputData = fileData;
             targetNode.data.toUpdate = true;
@@ -52,7 +51,8 @@ export default function CSVNode(data) {
                 let headers = lines[0].split(",");
                 for (let i = 1; i < lines.length; i++) {
                     let obj = {};
-                    let currentline = lines[i].split(",");
+                    let currentline = splitCsv(lines[i]);
+
                     for (let j = 0; j < headers.length; j++) {
                         obj[headers[j]] = currentline[j];
                     }
@@ -60,11 +60,29 @@ export default function CSVNode(data) {
                 }
                 //return result; //JavaScript object
                 setData(result);
+                console.log(result);
                 result = JSON.stringify(result); //JSON
             };
             fileReader.readAsText(file);
         }
     };
+
+    function splitCsv(str) {
+        return str.split(",").reduce(
+            (accum, curr) => {
+                if (accum.isConcatting) {
+                    accum.soFar[accum.soFar.length - 1] += "," + curr;
+                } else {
+                    accum.soFar.push(curr);
+                }
+                if (curr.split('"').length % 2 == 0) {
+                    accum.isConcatting = !accum.isConcatting;
+                }
+                return accum;
+            },
+            { soFar: [], isConcatting: false }
+        ).soFar;
+    }
 
     return (
         <>
