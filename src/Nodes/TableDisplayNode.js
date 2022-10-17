@@ -1,24 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Handle, useNodes } from "reactflow";
+import { Handle, useNodes, useEdges, useReactFlow } from "reactflow";
 import { Box, Typography } from "@mui/material";
 
 export default function TableDisplayNode(data) {
     const [inputData, setInputData] = useState(data.inputData);
+    const flowInstance = useReactFlow();
     const nodes = useNodes();
+    const edges = useEdges();
 
     useEffect(() => {
-        console.log("useeffect nodes");
         const thisNode = nodes.find((node) => node.id === data.id);
-        if (thisNode.data.inputData) {
-            setInputData(thisNode.data.inputData.slice(0, 10));
+        if (thisNode.data.toUpdate) {
+            const thisNode = nodes.find((node) => node.id === data.id);
+            if (thisNode.data.inputData) {
+                setInputData(thisNode.data.inputData.slice(0, 10));
+            }
+            thisNode.data.toUpdate = false;
+            flowInstance.setNodes(nodes);
         }
-    }, [data.id, nodes]);
+    }, [data, flowInstance, nodes]);
 
     const onConnect = (params) => {
         const source = nodes.find((node) => node.id === params.source);
+        const target = nodes.find((node) => node.id === params.target);
+        source.data.target = params.target;
+        target.data.source = params.source;
         if (source.data.outputData) {
             setInputData(source.data.outputData.slice(0, 10));
         }
+
+        flowInstance.setNodes(nodes);
     };
 
     return (

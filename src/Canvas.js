@@ -41,7 +41,7 @@ export default function Canvas() {
                     id: getId(),
                     type: "csv",
                     position,
-                    data: { label: <CSVNode />, outputData: null },
+                    data: { label: <CSVNode />, outputData: null, target: null },
                 };
 
                 setNodes((nodes) => nodes.concat(newNode));
@@ -53,7 +53,7 @@ export default function Canvas() {
                     id: getId(),
                     type: "table",
                     position,
-                    data: { label: <TableDisplayNode />, inputData: null },
+                    data: { label: <TableDisplayNode />, inputData: null, toUpdate: true, source: null },
                 };
 
                 setNodes((nodes) => nodes.concat(newNode));
@@ -64,6 +64,7 @@ export default function Canvas() {
                 id: getId(),
                 type,
                 position,
+                toUpdate: false,
                 data: { label: `${type} node` },
             };
 
