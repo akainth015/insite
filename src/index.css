@@ -27,6 +27,7 @@ code {
     padding: 15px 10px;
     font-size: 12px;
     background: #fcfcfc;
+    height: calc(100% - 30px);
 }
 
 .dndflow aside .description {
