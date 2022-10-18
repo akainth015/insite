@@ -1,14 +1,13 @@
 import React, {useCallback, useRef, useState} from "react";
 import ReactFlow, {addEdge, Background, Controls, ReactFlowProvider, useEdgesState, useNodesState,} from "reactflow";
 import "reactflow/dist/style.css";
+import {v4 as uuidv4} from "uuid";
+
 
 import Sidebar from "./Components/Sidebar";
-import {customNodeTypes} from "./Nodes/nodes";
+import {createNode, customNodeTypes, onNewConnection} from "./Nodes/nodes";
 
-let id = 0;
-const getId = () => `dndnode_${id++}`;
-
-const proOptions = { hideAttribution: true };
+const proOptions = {hideAttribution: true};
 
 export default function Canvas() {
     const reactFlowWrapper = useRef(null);
@@ -16,8 +15,16 @@ export default function Canvas() {
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
     const onConnect = useCallback(
-        (params) => setEdges((edges) => addEdge(params, edges)),
-        [setEdges]
+        connection => {
+            console.debug(`Connection created`, connection);
+            nodes.find(node => node.id === connection.target).data[connection.targetHandle] = {
+                nodeId: connection.source,
+                channel: connection.sourceHandle
+            }
+            onNewConnection(connection);
+            setEdges((edges) => addEdge(connection, edges));
+        },
+        [nodes, setEdges]
     );
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -43,11 +50,12 @@ export default function Canvas() {
             });
 
             const newNode = {
-                id: getId(),
+                id: uuidv4(),
                 type,
                 position,
                 data: {},
             };
+            createNode(newNode.id);
             setNodes((nodes) => nodes.concat(newNode));
         },
         [reactFlowInstance, setNodes]
