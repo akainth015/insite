@@ -1,6 +1,7 @@
 import './App.css';
 import { sinewave_data } from './sinewave';
 import {LinePlot} from './LinePlot.js'
+import {ClockNode} from './Nodes/ClockNode.js'
 
 function App() {
 

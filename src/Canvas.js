@@ -4,6 +4,8 @@ import "reactflow/dist/style.css";
 
 import Sidebar from "./Components/Sidebar";
 import CSVNode from "./Nodes/CSVNode";
+import ClockNode from "./Nodes/ClockNode.js";
+
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -46,6 +48,29 @@ export default function Canvas() {
                 setNodes((nodes) => nodes.concat(newNode));
                 return;
             }
+            if (type === "ClockNode") {
+                const newNode = {
+                    id: getId(),
+                    type: "output",
+                    position,
+                    data: { label: <ClockNode /> },
+                };
+
+                setNodes((nodes) => nodes.concat(newNode));
+                return;
+            }
+            if (type === "FilterNode") {
+                const newNode = {
+                    id: getId(),
+                    type: "default",
+                    position,
+                    data: { label: <FilterNode /> },
+                };
+
+                setNodes((nodes) => nodes.concat(newNode));
+                return;
+            }
+
 
             const newNode = {
                 id: getId(),
