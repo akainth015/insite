@@ -1,10 +1,17 @@
+import { CssBaseline, Stack } from '@mui/material';
 import './App.css';
+import Canvas from './Canvas';
+import Sidebar from './Components/Sidebar';
 
 function App() {
     return (
-        <div className="App">
-
-        </div>
+        <>
+            <CssBaseline/>
+            <Stack direction = "row">
+                <Canvas/>
+                <Sidebar/>
+            </Stack>
+        </>
     );
 }
 

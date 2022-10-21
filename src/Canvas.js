@@ -1,16 +1,14 @@
-import React, { useCallback, useRef, useState } from "react";
-import ReactFlow, { addEdge, Background, Controls, ReactFlowProvider, useEdgesState, useNodesState } from "reactflow";
+import React, { useCallback, useMemo, useState } from "react";
+import ReactFlow, { addEdge, Background, Controls, useEdgesState, useNodesState, MiniMap } from "reactflow";
 import "reactflow/dist/style.css";
 import { v4 as uuidv4 } from "uuid";
 
-import Sidebar from "./Components/Sidebar";
+import { Box } from "@mui/system";
 import { createNode, inputNodeTypes, modificationNodeTypes, outputNodeTypes, onNewConnection } from "./Nodes/nodes";
 
 const proOptions = { hideAttribution: true };
-const nodeTypes = Object.assign({}, inputNodeTypes, modificationNodeTypes, outputNodeTypes);
 
 export default function Canvas() {
-    const reactFlowWrapper = useRef(null);
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -37,7 +35,6 @@ export default function Canvas() {
             console.debug("A drop event was completed on the canvas", event);
             event.preventDefault();
 
-            const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
             const type = event.dataTransfer.getData("application/reactflow");
 
             if (typeof type === "undefined" || type === null) {
@@ -46,8 +43,8 @@ export default function Canvas() {
             console.log(`Found a request to create a ${type} node`);
 
             const position = reactFlowInstance.project({
-                x: event.clientX - reactFlowBounds.left,
-                y: event.clientY - reactFlowBounds.top,
+                x: event.clientX,
+                y: event.clientY,
             });
 
             const newNode = {
@@ -62,30 +59,30 @@ export default function Canvas() {
         [reactFlowInstance, setNodes]
     );
 
+    const nodeTypes = useMemo(() => {
+        return Object.assign({}, inputNodeTypes, modificationNodeTypes, outputNodeTypes);
+    }, []);
+
     return (
-        <div className="dndflow">
-            <ReactFlowProvider>
-                <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-                    <ReactFlow
-                        nodes={nodes}
-                        edges={edges}
-                        onEdgesChange={onEdgesChange}
-                        onNodesChange={onNodesChange}
-                        onConnect={onConnect}
-                        onDrop={onDrop}
-                        onDragOver={onDragOver}
-                        onLoad={setReactFlowInstance}
-                        onInit={setReactFlowInstance}
-                        fitView
-                        nodeTypes={nodeTypes}
-                        proOptions={proOptions}
-                    >
-                        <Background />
-                        <Controls />
-                    </ReactFlow>
-                </div>
-                <Sidebar />
-            </ReactFlowProvider>
-        </div>
+        <Box sx = {{height: "100vh", width: "80vw", backgroundColor: "#282c34"}}>
+            <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onEdgesChange={onEdgesChange}
+                onNodesChange={onNodesChange}
+                onConnect={onConnect}
+                onDrop={onDrop}
+                onDragOver={onDragOver}
+                onLoad={setReactFlowInstance}
+                onInit={setReactFlowInstance}
+                fitView
+                nodeTypes={nodeTypes}
+                proOptions={proOptions}
+            >
+                <Background />
+                <Controls />
+                <MiniMap />
+            </ReactFlow>
+        </Box>
     );
 }
