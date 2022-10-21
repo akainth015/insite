@@ -1,12 +1,12 @@
-import {useInput, useOutput} from "./nodes";
-import {useEffect, useState} from "react";
-import {Card, CardContent} from "@mui/material";
+import { useInput, useOutput } from "../nodes";
+import { useEffect, useState } from "react";
+import { Card, CardContent } from "@mui/material";
 
 export default function FiveSTimer() {
     const [input, inputHndl] = useInput("input", ["T"]);
     const [output, setOutput, outputHndl] = useOutput("Tick", "T", input);
     const [shouldSet, setShouldSet] = useState(true);
-    
+
     useEffect(() => {
         if (shouldSet) {
             setTimeout(() => {
@@ -20,10 +20,8 @@ export default function FiveSTimer() {
     return (
         <Card>
             {inputHndl}
-            <CardContent>
-                The 5 second tick output is {output}
-            </CardContent>
+            <CardContent>The 5 second tick output is {output}</CardContent>
             {outputHndl}
         </Card>
-    )
+    );
 }
