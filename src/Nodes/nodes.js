@@ -1,6 +1,6 @@
 import WebHookNode from "./Input/WebHookNode";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import ClockNode from "./Output/ClockNode";
+import ClockNode from "./Input/ClockNode";
 import TextNode from "./Output/TextNode";
 import { Handle, Position } from "reactflow";
 import FiveSTimer from "./Modification/FiveSTimer";
