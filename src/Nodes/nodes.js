@@ -6,6 +6,11 @@ import { Handle, Position } from "reactflow";
 import FiveSTimer from "./Modification/FiveSTimer";
 import CSVNode from "./Input/CSVNode";
 import TableDisplayNode from "./Output/TableDisplayNode";
+import WebhookIcon from '@mui/icons-material/Webhook';
+
+export const nodeIcons = {
+    "Web Hook": WebhookIcon
+};
 
 export const modificationNodeTypes = {
     "5ST": FiveSTimer,
@@ -21,6 +26,10 @@ export const outputNodeTypes = {
     Clock: ClockNode,
     "Text Display": TextNode,
 };
+
+for (let i = 0; i < 200; i++) {
+    outputNodeTypes[`Table Display ${i}`] = TableDisplayNode;
+}
 
 const nodes = {};
 
