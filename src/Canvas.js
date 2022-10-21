@@ -1,26 +1,27 @@
-import React, {useCallback, useRef, useState} from "react";
-import ReactFlow, {addEdge, Background, Controls, ReactFlowProvider, useEdgesState, useNodesState,} from "reactflow";
+import React, { useCallback, useRef, useState } from "react";
+import ReactFlow, { addEdge, Background, Controls, ReactFlowProvider, useEdgesState, useNodesState } from "reactflow";
 import "reactflow/dist/style.css";
-import {v4 as uuidv4} from "uuid";
-
+import { v4 as uuidv4 } from "uuid";
 
 import Sidebar from "./Components/Sidebar";
-import {createNode, customNodeTypes, onNewConnection} from "./Nodes/nodes";
+import { createNode, inputNodeTypes, modificationNodeTypes, outputNodeTypes, onNewConnection } from "./Nodes/nodes";
 
-const proOptions = {hideAttribution: true};
+const proOptions = { hideAttribution: true };
+const nodeTypes = Object.assign({}, inputNodeTypes, modificationNodeTypes, outputNodeTypes);
 
 export default function Canvas() {
     const reactFlowWrapper = useRef(null);
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
+
     const onConnect = useCallback(
-        connection => {
+        (connection) => {
             console.debug(`Connection created`, connection);
-            nodes.find(node => node.id === connection.target).data[connection.targetHandle] = {
+            nodes.find((node) => node.id === connection.target).data[connection.targetHandle] = {
                 nodeId: connection.source,
-                channel: connection.sourceHandle
-            }
+                channel: connection.sourceHandle,
+            };
             onNewConnection(connection);
             setEdges((edges) => addEdge(connection, edges));
         },
@@ -76,14 +77,14 @@ export default function Canvas() {
                         onLoad={setReactFlowInstance}
                         onInit={setReactFlowInstance}
                         fitView
-                        nodeTypes={customNodeTypes}
+                        nodeTypes={nodeTypes}
                         proOptions={proOptions}
                     >
-                        <Background/>
-                        <Controls/>
+                        <Background />
+                        <Controls />
                     </ReactFlow>
                 </div>
-                <Sidebar/>
+                <Sidebar />
             </ReactFlowProvider>
         </div>
     );

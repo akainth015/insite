@@ -1,12 +1,12 @@
-import {useEffect} from "react";
-import {Card, CardContent} from "@mui/material";
-import {useOutput} from "./nodes";
+import { useEffect } from "react";
+import { Card, CardContent } from "@mui/material";
+import { useOutput } from "../nodes";
 
 function getCurrentTimeString() {
     return new Date().toTimeString();
 }
 
-function ClockNode({id}) {
+function ClockNode({ id }) {
     const [timeString, setTimeString, timeHandle] = useOutput("Time", "text", getCurrentTimeString());
 
     useEffect(() => {
@@ -18,9 +18,7 @@ function ClockNode({id}) {
 
     return (
         <Card>
-            <CardContent>
-                {timeString}
-            </CardContent>
+            <CardContent>{timeString}</CardContent>
             {timeHandle}
         </Card>
     );
