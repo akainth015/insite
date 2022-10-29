@@ -6,6 +6,7 @@ import { Handle, Position } from "reactflow";
 import FiveSTimer from "./Modification/FiveSTimer";
 import CSVNode from "./Input/CSVNode";
 import TableDisplayNode from "./Output/TableDisplayNode";
+import DropNode from "./Modification/DropNode";
 import WebhookIcon from '@mui/icons-material/Webhook';
 
 export const nodeIcons = {
@@ -14,6 +15,7 @@ export const nodeIcons = {
 
 export const modificationNodeTypes = {
     "5ST": FiveSTimer,
+    "Drop Node": DropNode,
 };
 
 export const inputNodeTypes = {
@@ -30,6 +32,7 @@ export const outputNodeTypes = {
 for (let i = 0; i < 200; i++) {
     outputNodeTypes[`Table Display ${i}`] = TableDisplayNode;
 }
+
 
 const nodes = {};
 
