@@ -8,6 +8,10 @@ import CSVNode from "./Input/CSVNode";
 import TableDisplayNode from "./Output/TableDisplayNode";
 import DropNode from "./Modification/DropNode";
 import WebhookIcon from '@mui/icons-material/Webhook';
+import OneHot from "./Modification/OneHot";
+import ConvertFloat from "./Modification/ConvertFloat";
+import FillMissing from "./Modification/MissingValue";
+import Correlation from "./Output/Correlation";
 
 import JsonNode from "./Input/JsonNode";
 
@@ -17,7 +21,9 @@ export const nodeIcons = {
 
 export const modificationNodeTypes = {
     "5ST": FiveSTimer,
-    "Drop Node": DropNode,
+    "OneHot Encoding": OneHot,
+    "Convert to Int": ConvertFloat,
+    "Fill Missing Values": FillMissing,
 };
 
 
@@ -31,6 +37,7 @@ export const outputNodeTypes = {
     "Table Display": TableDisplayNode,
     Clock: ClockNode,
     "Text Display": TextNode,
+    Correlation: Correlation,
 };
 
 const nodeStates = {};
