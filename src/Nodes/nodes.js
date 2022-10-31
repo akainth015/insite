@@ -8,6 +8,7 @@ import CSVNode from "./Input/CSVNode";
 import TableDisplayNode from "./Output/TableDisplayNode";
 import DropNode from "./Modification/DropNode";
 import WebhookIcon from '@mui/icons-material/Webhook';
+import YahooFinanceNode from "./Output/YahooFinanceTicker";
 
 export const nodeIcons = {
     "Web Hook": WebhookIcon
