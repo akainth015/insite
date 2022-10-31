@@ -12,7 +12,7 @@ import OneHot from "./Modification/OneHot";
 import ConvertFloat from "./Modification/ConvertFloat";
 import FillMissing from "./Modification/MissingValue";
 import Correlation from "./Output/Correlation";
-
+import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
 
 export const nodeIcons = {
@@ -20,6 +20,7 @@ export const nodeIcons = {
 };
 
 export const modificationNodeTypes = {
+    "Filter Node": FilterNode,
     "5ST": FiveSTimer,
     "OneHot Encoding": OneHot,
     "Convert to Int": ConvertFloat,
