@@ -37,11 +37,12 @@ export default function TableDisplayNode(data) {
                                     <th key={key}>{key}</th>
                                 ))}
                             </tr>
-                            {processedInput.map((item) => (
-                                <tr key={item[1]}>
-                                    {Object.values(item).map((val) => (
-                                        <td key={val}>{val}</td>
-                                    ))}
+                            {processedInput.map((item, index) => (
+                                <tr key={index}>
+                                    {
+                                        Object.keys(item)
+                                            .map(key => <td key={key}>{item[key]}</td>)
+                                    }
                                 </tr>
                             ))}
                         </tbody>
