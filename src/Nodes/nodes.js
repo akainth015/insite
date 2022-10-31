@@ -1,8 +1,8 @@
 import WebHookNode from "./Input/WebHookNode";
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import {createContext, useCallback, useContext, useEffect, useState} from "react";
 import ClockNode from "./Input/ClockNode";
 import TextNode from "./Output/TextNode";
-import { Handle, Position } from "reactflow";
+import {Handle, Position} from "reactflow";
 import FiveSTimer from "./Modification/FiveSTimer";
 import CSVNode from "./Input/CSVNode";
 import TableDisplayNode from "./Output/TableDisplayNode";
@@ -33,97 +33,59 @@ export const outputNodeTypes = {
     "Text Display": TextNode,
 };
 
-for (let i = 0; i < 200; i++) {
-    outputNodeTypes[`Table Display ${i}`] = TableDisplayNode;
-}
-
-
-const nodes = {};
+const nodeStates = {};
 
 const NodeIdContext = createContext(null);
 
 export function createNode(nodeId) {
-    nodes[nodeId] = {
-        outputs: {},
-        backtraces: {},
-    };
-}
-
-export function onNewConnection({ source, sourceHandle, target, targetHandle }) {
-    const backtrace = nodes[target].backtraces[targetHandle];
-    backtrace.nodeId = source;
-    backtrace.channel = sourceHandle;
-
-    if (backtrace.callback) {
-        backtrace.callback();
+    nodeStates[nodeId] = {
+        backtraces: {}, // the backtrace is a mapping from the input label to the output channel of the node that provides the input
+        outputs: {}, // the output dictionary stores the latest output value on each channel
     }
 }
 
-export function useOutput(outputLabel, outputType, initialOutput = null) {
-    const nodeId = useContext(NodeIdContext);
+export function createConnection({source, sourceHandle, target, targetHandle}) {
+    // store information about the connection for debugging purposes
+    nodeStates[target].backtraces[targetHandle].source = source;
+    nodeStates[target].backtraces[targetHandle].sourceHandle = sourceHandle;
+    // tell the target node about the latest value emitted by the source channel
+    const latestValueEmitted = nodeStates[source].outputs[sourceHandle].value;
+    nodeStates[target].backtraces[targetHandle].onNewInputAvailable(latestValueEmitted);
+    // create a link such that any future updates from the source are propagated to the target
+    nodeStates[source].outputs[sourceHandle].listeners.push(nodeStates[target].backtraces[targetHandle].onNewInputAvailable);
+}
 
+export function useOutput(label, outputType, initialOutput = null) {
+    const nodeId = useContext(NodeIdContext);
     const [output, setOutput] = useState(initialOutput);
 
-    const outputs = nodes[nodeId].outputs;
-    if (!outputs[outputLabel]) {
-        outputs[outputLabel] = {
-            lastValue: null,
-            callbacks: new Set(),
+    useEffect(() => {
+        nodeStates[nodeId].outputs[label] = {
+            listeners: [],
+            value: initialOutput
         };
-    }
+    }, [nodeId, label, initialOutput]);
 
-    const updateFunction = useCallback(
-        (value) => {
-            console.debug("The update function is being called");
-            setOutput(value);
-            outputs[outputLabel].lastValue = value;
-            for (const callback of outputs[outputLabel].callbacks) {
-                callback(value);
-            }
-        },
-        [outputLabel, outputs]
-    );
-    return [output, updateFunction, <Handle type={"source"} id={outputLabel} position={Position.Bottom} />];
+    const setOutputAndPropagate = useCallback(newValue => {
+        setOutput(newValue);
+        nodeStates[nodeId].outputs[label].value = newValue;
+        nodeStates[nodeId].outputs[label].listeners.forEach(listener => listener(newValue));
+    }, [nodeId, label]);
+
+    return [output, setOutputAndPropagate, <Handle type={"source"} id={label} position={Position.Bottom}/>];
 }
 
-export function useInput(inputLabel, inputTypes) {
+export function useInput(label, inputTypes) {
     const nodeId = useContext(NodeIdContext);
-    const backtraces = nodes[nodeId].backtraces;
-    if (!backtraces[inputLabel]) {
-        backtraces[inputLabel] = {
-            callback: null,
-            nodeId: null,
-            channel: null,
-        };
-    }
-    const backtrace = backtraces[inputLabel];
-    const currentOutputOfISN = backtrace.nodeId ? nodes[backtrace.nodeId].outputs[backtrace.channel].lastValue : null;
-    const [input, setInput] = useState(currentOutputOfISN);
+    const [input, setInput] = useState(null);
 
     useEffect(() => {
-        if (backtrace.nodeId) {
-            const onIsnUpdate = () =>
-                setInput(backtrace ? nodes[backtrace.nodeId].outputs[backtrace.channel].lastValue : null);
-            const backtraceCallbacks = nodes[backtrace.nodeId].outputs[backtrace.channel].callbacks;
-            backtraceCallbacks.add(onIsnUpdate);
+        nodeStates[nodeId].backtraces[label] = {
+            onNewInputAvailable: setInput
+        };
+    }, [nodeId, label]);
 
-            return () => backtraceCallbacks.delete(onIsnUpdate);
-        } else {
-            const onIsnUpdate = () => {
-                const backtrace = backtraces[inputLabel];
-                setInput(backtrace.nodeId ? nodes[backtrace.nodeId].outputs[backtrace.channel].lastValue : null);
-            };
-            backtraces[inputLabel] = {
-                callback: onIsnUpdate,
-            };
-
-            return () => {
-                return (backtraces[inputLabel].callback = null);
-            };
-        }
-    }, [backtrace, backtraces, inputLabel, nodeId, backtrace.nodeId, backtrace.channel]);
-
-    return [input, <Handle type={"target"} id={inputLabel} />];
+    return [input, <Handle type={"target"} id={label}/>];
 }
 
 // The following code allows the Node ID to be implicitly captured by our hook above
