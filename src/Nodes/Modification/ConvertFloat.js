@@ -19,17 +19,21 @@ export default function ConvertFloat({ data }) {
     // Drops the column from the data
     const processData = () => {
         //Create a copy of the input
-        let newObj = input.map((item) => {
-            return item;
-        });
+        let newObj = structuredClone(input);
 
         // Converts all values to ints when possible
         let newData = newObj.map((item) => {
             for (const key in item) {
                 if (item.hasOwnProperty(key)) {
                     const element = item[key];
-                    if (element != null && element != undefined) {
-                        item[key] = parseFloat(element);
+                    if (element != null && element !== undefined) {
+                        if (element === "") {
+                            item[key] = null;
+                        } else if (isNaN(parseFloat(element))) {
+                            item[key] = element;
+                        } else {
+                            item[key] = parseFloat(element);
+                        }
                     }
                 }
             }

@@ -14,6 +14,7 @@ import FillMissing from "./Modification/MissingValue";
 import Correlation from "./Output/Correlation";
 import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
+import Normalization from "./Modification/Normalization";
 
 export const nodeIcons = {
     "Web Hook": WebhookIcon
@@ -25,6 +26,7 @@ export const modificationNodeTypes = {
     "OneHot Encoding": OneHot,
     "Convert to Int": ConvertFloat,
     "Fill Missing Values": FillMissing,
+    "Normalization": Normalization,
 };
 
 
