@@ -9,6 +9,8 @@ import TableDisplayNode from "./Output/TableDisplayNode";
 import DropNode from "./Modification/DropNode";
 import WebhookIcon from '@mui/icons-material/Webhook';
 
+import JsonNode from "./Input/JsonNode";
+
 export const nodeIcons = {
     "Web Hook": WebhookIcon
 };
@@ -18,9 +20,11 @@ export const modificationNodeTypes = {
     "Drop Node": DropNode,
 };
 
+
 export const inputNodeTypes = {
     "Web Hook": WebHookNode,
     "CSV File": CSVNode,
+    "JSON File": JsonNode,
 };
 
 export const outputNodeTypes = {
