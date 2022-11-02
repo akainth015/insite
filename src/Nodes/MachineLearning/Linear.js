@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, FormControl, Typography, MenuItem, Select, InputLabel, OutlinedInput, Chip, Button } from "@mui/material";
-import { useInput, useOutput } from "../nodes";
+import { useInput, useOutput, NodeIdContext } from "../nodes";
 import { Stack } from "@mui/system";
 import { io } from "socket.io-client";
 
@@ -27,6 +27,7 @@ export default function LinearNode() {
     const [trainingCompleted, setTrainingCompleted] = useState(false);
     const [train_loss, setTrainLoss] = useState(0);
     const [val_loss, setValLoss] = useState(0);
+    const nodeId = useContext(NodeIdContext);
 
     // Websockets!
     useEffect(() => {
@@ -93,7 +94,7 @@ export default function LinearNode() {
                 x.push(temp);
                 y.push(input[i][y_train]);
             }
-            socket.emit("linear", x, y, x_labels, y_labels);
+            socket.emit("linear", nodeId, x, y, x_labels, y_labels);
         }
     };
 
