@@ -23,8 +23,7 @@ export default function LinearNode() {
     const [x_train, setX] = useState([]);
     const [y_train, setY] = useState("");
     const [trainingCompleted, setTrainingCompleted] = useState(false);
-    const [train_loss, setTrainLoss] = useState(0);
-    const [val_loss, setValLoss] = useState(0);
+    const [result, setResult] = useState(null);
 
     const nodeId = useContext(NodeIdContext);
 
@@ -32,9 +31,10 @@ export default function LinearNode() {
     useEffect(() => {
         socket.on("linear", (data) => {
             console.log("linear response", data);
-            setTrainLoss(data.train_loss);
-            setValLoss(data.val_loss);
-            setTrainingCompleted(true);
+            if (data.nodeId === nodeId) {
+                setResult(data);
+                setTrainingCompleted(true);
+            }
         });
     }, []);
 
@@ -159,8 +159,16 @@ export default function LinearNode() {
                     {trainingCompleted && (
                         <Stack direction="column">
                             <Typography variant="h7">Training Completed!</Typography>
-                            <Typography variant="h7">Training Loss: {train_loss}</Typography>
-                            <Typography variant="h7">Validation Loss: {val_loss}</Typography>
+                            {
+                                // Output each element in the result object
+                                Object.keys(result).map((key) => {
+                                    return (
+                                        <Typography variant="h7" key={key}>
+                                            {key}: {result[key]}
+                                        </Typography>
+                                    );
+                                })
+                            }
                         </Stack>
                     )}
                 </Stack>

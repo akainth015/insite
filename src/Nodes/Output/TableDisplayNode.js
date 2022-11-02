@@ -11,7 +11,7 @@ export default function TableDisplayNode(data) {
     React.useEffect(() => {
         setLoading(true);
         if (input) {
-            setProcessedInput(input.slice(0, 5));
+            setProcessedInput(input.slice(0, 10));
             setLoading(false);
             setOutput(input);
         }
@@ -39,10 +39,9 @@ export default function TableDisplayNode(data) {
                             </tr>
                             {processedInput.map((item, index) => (
                                 <tr key={index}>
-                                    {
-                                        Object.keys(item)
-                                            .map(key => <td key={key}>{item[key]}</td>)
-                                    }
+                                    {Object.keys(item).map((key) => (
+                                        <td key={key}>{item[key]}</td>
+                                    ))}
                                 </tr>
                             ))}
                         </tbody>
