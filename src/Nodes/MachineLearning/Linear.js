@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, FormControl, Typography, MenuItem, Select, InputLabel, OutlinedInput, Chip, Button } from "@mui/material";
 import { useInput, useOutput } from "../nodes";
 import { Stack } from "@mui/system";
-import { io } from "socket.io-client";
+import { SocketContext } from "../SocketProvider";
+import { NodeIdContext } from "../nodes";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -15,9 +16,6 @@ const MenuProps = {
     },
 };
 
-// outside of your component, initialize the socket variable
-let socket;
-
 export default function LinearNode() {
     const [input, inputHndl] = useInput("input", ["object[]"]);
     const [output, setOutput, outputHndl] = useOutput("output", "object[]", input);
@@ -28,19 +26,17 @@ export default function LinearNode() {
     const [train_loss, setTrainLoss] = useState(0);
     const [val_loss, setValLoss] = useState(0);
 
+    const socket = useContext(SocketContext);
+    const nodeId = useContext(NodeIdContext);
+
     // Websockets!
     useEffect(() => {
-        socket = io();
-
         socket.on("linear", (data) => {
+            console.log("linear response", data);
             setTrainLoss(data.train_loss);
             setValLoss(data.val_loss);
             setTrainingCompleted(true);
         });
-
-        return () => {
-            socket.disconnect();
-        };
     }, []);
 
     useEffect(() => {
@@ -93,7 +89,7 @@ export default function LinearNode() {
                 x.push(temp);
                 y.push(input[i][y_train]);
             }
-            socket.emit("linear", x, y, x_labels, y_labels);
+            socket.emit("linear", nodeId, x, y, x_labels, y_labels);
         }
     };
 

@@ -50,7 +50,7 @@ export const outputNodeTypes = {
 
 const nodeStates = {};
 
-const NodeIdContext = createContext(null);
+export const NodeIdContext = createContext(null);
 
 export function createNode(nodeId) {
     nodeStates[nodeId] = {

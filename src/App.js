@@ -2,7 +2,7 @@ import { CssBaseline, Stack } from "@mui/material";
 import "./App.css";
 import Canvas from "./Canvas";
 import Sidebar from "./Components/Sidebar";
-import SocketProvider from "./Nodes/SocketProvider";
+import { SocketProvider } from "./Nodes/SocketProvider";
 
 function App() {
     return (
