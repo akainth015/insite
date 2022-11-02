@@ -1,20 +1,33 @@
-import React, { useState, useRef, useCallback } from "react";
-import ReactFlow, { Background, ReactFlowProvider, useEdgesState, useNodesState, addEdge, Controls } from "reactflow";
+import React, { useCallback, useMemo, useState } from "react";
+import ReactFlow, { addEdge, Background, Controls, useEdgesState, useNodesState, MiniMap } from "reactflow";
 import "reactflow/dist/style.css";
+import { v4 as uuidv4 } from "uuid";
 
-import Sidebar from "./Components/Sidebar";
-import CSVNode from "./Nodes/CSVNode";
-import TableDisplayNode from "./Nodes/TableDisplayNode";
-let id = 0;
-const getId = () => `node_${id++}`;
-const nodeTypes = { csv: CSVNode, table: TableDisplayNode };
+import { Box } from "@mui/system";
+import {
+    createNode,
+    inputNodeTypes,
+    modificationNodeTypes,
+    outputNodeTypes,
+    machineLearningNodes,
+    createConnection,
+} from "./Nodes/nodes";
+
+const proOptions = { hideAttribution: true };
 
 export default function Canvas() {
-    const reactFlowWrapper = useRef(null);
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
-    const onConnect = useCallback((params) => setEdges((edges) => addEdge(params, edges)), [setEdges]);
+
+    const onConnect = useCallback(
+        (connection) => {
+            console.debug(`Connection created`, connection);
+            createConnection(connection);
+            setEdges((edges) => addEdge(connection, edges));
+        },
+        [setEdges]
+    );
     const onDragOver = useCallback((event) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = "move";
@@ -22,80 +35,56 @@ export default function Canvas() {
 
     const onDrop = useCallback(
         (event) => {
+            console.debug("A drop event was completed on the canvas", event);
             event.preventDefault();
 
-            const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
             const type = event.dataTransfer.getData("application/reactflow");
 
             if (typeof type === "undefined" || type === null) {
                 return;
             }
+            console.log(`Creating a ${type} node`);
 
             const position = reactFlowInstance.project({
-                x: event.clientX - reactFlowBounds.left,
-                y: event.clientY - reactFlowBounds.top,
+                x: event.clientX,
+                y: event.clientY,
             });
 
-            if (type === "CSVNode") {
-                const newNode = {
-                    id: getId(),
-                    type: "csv",
-                    position,
-                    data: { label: <CSVNode />, outputData: null, target: null },
-                };
-
-                setNodes((nodes) => nodes.concat(newNode));
-                return;
-            }
-
-            if (type === "TableDisplayNode") {
-                const newNode = {
-                    id: getId(),
-                    type: "table",
-                    position,
-                    data: { label: <TableDisplayNode />, inputData: null, toUpdate: true, source: null },
-                };
-
-                setNodes((nodes) => nodes.concat(newNode));
-                return;
-            }
-
             const newNode = {
-                id: getId(),
+                id: uuidv4(),
                 type,
                 position,
-                toUpdate: false,
-                data: { label: `${type} node` },
+                data: {},
             };
-
+            createNode(newNode.id);
             setNodes((nodes) => nodes.concat(newNode));
         },
         [reactFlowInstance, setNodes]
     );
 
+    const nodeTypes = useMemo(() => {
+        return Object.assign({}, inputNodeTypes, modificationNodeTypes, outputNodeTypes, machineLearningNodes);
+    }, []);
+
     return (
-        <div className="dndflow">
-            <ReactFlowProvider>
-                <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-                    <ReactFlow
-                        nodes={nodes}
-                        edges={edges}
-                        onEdgesChange={onEdgesChange}
-                        onNodesChange={onNodesChange}
-                        onConnect={onConnect}
-                        onDrop={onDrop}
-                        onDragOver={onDragOver}
-                        onLoad={setReactFlowInstance}
-                        onInit={setReactFlowInstance}
-                        nodeTypes={nodeTypes}
-                        fitView
-                    >
-                        <Background />
-                        <Controls />
-                    </ReactFlow>
-                </div>
-                <Sidebar />
-            </ReactFlowProvider>
-        </div>
+        <Box sx={{ height: "100vh", width: "80vw", backgroundColor: "#282c34" }}>
+            <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onEdgesChange={onEdgesChange}
+                onNodesChange={onNodesChange}
+                onConnect={onConnect}
+                onDrop={onDrop}
+                onDragOver={onDragOver}
+                onLoad={setReactFlowInstance}
+                onInit={setReactFlowInstance}
+                nodeTypes={nodeTypes}
+                proOptions={proOptions}
+            >
+                <Background />
+                <Controls />
+                <MiniMap />
+            </ReactFlow>
+        </Box>
     );
 }

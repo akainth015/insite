@@ -1,15 +1,13 @@
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+        "Droid Sans", "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 .dndflow {
@@ -27,6 +25,7 @@ code {
     padding: 15px 10px;
     font-size: 12px;
     background: #fcfcfc;
+    height: calc(100% - 30px);
 }
 
 .dndflow aside .description {
@@ -34,6 +33,7 @@ code {
 }
 
 .dndflow .dndnode {
+    width: 90%;
     height: 20px;
     padding: 4px;
     border: 1px solid #1a192b;
