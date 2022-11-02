@@ -4,7 +4,14 @@ import "reactflow/dist/style.css";
 import { v4 as uuidv4 } from "uuid";
 
 import { Box } from "@mui/system";
-import { createNode, inputNodeTypes, modificationNodeTypes, outputNodeTypes, createConnection } from "./Nodes/nodes";
+import {
+    createNode,
+    inputNodeTypes,
+    modificationNodeTypes,
+    outputNodeTypes,
+    machineLearningNodes,
+    createConnection,
+} from "./Nodes/nodes";
 
 const proOptions = { hideAttribution: true };
 
@@ -56,11 +63,11 @@ export default function Canvas() {
     );
 
     const nodeTypes = useMemo(() => {
-        return Object.assign({}, inputNodeTypes, modificationNodeTypes, outputNodeTypes);
+        return Object.assign({}, inputNodeTypes, modificationNodeTypes, outputNodeTypes, machineLearningNodes);
     }, []);
 
     return (
-        <Box sx = {{height: "100vh", width: "80vw", backgroundColor: "#282c34"}}>
+        <Box sx={{ height: "100vh", width: "80vw", backgroundColor: "#282c34" }}>
             <ReactFlow
                 nodes={nodes}
                 edges={edges}

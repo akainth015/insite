@@ -1,5 +1,5 @@
 import { Paper, Stack, Typography, Grid, TextField } from "@mui/material";
-import { inputNodeTypes, modificationNodeTypes, outputNodeTypes } from "../Nodes/nodes";
+import { inputNodeTypes, modificationNodeTypes, outputNodeTypes, machineLearningNodes } from "../Nodes/nodes";
 import React, { useState, useRef } from "react";
 import Node from "./Node";
 
@@ -52,6 +52,10 @@ export default function Sidebar() {
                         <Typography variant="h5" align="center">Output Nodes</Typography>
                     </Grid>
                     {renderNodeTypes(outputNodeTypes)}
+                    <Grid item xs={12}>
+                        <Typography variant="h5" align="center">Machine Learning Nodes</Typography>
+                    </Grid>
+                    {renderNodeTypes(machineLearningNodes)}
                 </Grid>
             </Stack>
         </Stack>

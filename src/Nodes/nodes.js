@@ -1,13 +1,13 @@
 import WebHookNode from "./Input/WebHookNode";
-import {createContext, useCallback, useContext, useEffect, useState} from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import ClockNode from "./Input/ClockNode";
 import TextNode from "./Output/TextNode";
-import {Handle, Position} from "reactflow";
+import { Handle, Position } from "reactflow";
 import FiveSTimer from "./Modification/FiveSTimer";
 import CSVNode from "./Input/CSVNode";
 import TableDisplayNode from "./Output/TableDisplayNode";
 import DropNode from "./Modification/DropNode";
-import WebhookIcon from '@mui/icons-material/Webhook';
+import WebhookIcon from "@mui/icons-material/Webhook";
 import OneHot from "./Modification/OneHot";
 import ConvertFloat from "./Modification/ConvertFloat";
 import FillMissing from "./Modification/MissingValue";
@@ -15,20 +15,25 @@ import Correlation from "./Output/Correlation";
 import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
 import Normalization from "./Modification/Normalization";
+import LinearNode from "./MachineLearning/Linear";
 
 export const nodeIcons = {
-    "Web Hook": WebhookIcon
+    "Web Hook": WebhookIcon,
+};
+
+export const machineLearningNodes = {
+    "Linear Regression": LinearNode,
 };
 
 export const modificationNodeTypes = {
     "Filter Node": FilterNode,
+    "Drop Node": DropNode,
     "5ST": FiveSTimer,
     "OneHot Encoding": OneHot,
     "Convert to Int": ConvertFloat,
     "Fill Missing Values": FillMissing,
-    "Normalization": Normalization,
+    Normalization: Normalization,
 };
-
 
 export const inputNodeTypes = {
     "Web Hook": WebHookNode,
@@ -51,10 +56,10 @@ export function createNode(nodeId) {
     nodeStates[nodeId] = {
         backtraces: {}, // the backtrace is a mapping from the input label to the output channel of the node that provides the input
         outputs: {}, // the output dictionary stores the latest output value on each channel
-    }
+    };
 }
 
-export function createConnection({source, sourceHandle, target, targetHandle}) {
+export function createConnection({ source, sourceHandle, target, targetHandle }) {
     // store information about the connection for debugging purposes
     nodeStates[target].backtraces[targetHandle].source = source;
     nodeStates[target].backtraces[targetHandle].sourceHandle = sourceHandle;
@@ -62,7 +67,9 @@ export function createConnection({source, sourceHandle, target, targetHandle}) {
     const latestValueEmitted = nodeStates[source].outputs[sourceHandle].value;
     nodeStates[target].backtraces[targetHandle].onNewInputAvailable(latestValueEmitted);
     // create a link such that any future updates from the source are propagated to the target
-    nodeStates[source].outputs[sourceHandle].listeners.push(nodeStates[target].backtraces[targetHandle].onNewInputAvailable);
+    nodeStates[source].outputs[sourceHandle].listeners.push(
+        nodeStates[target].backtraces[targetHandle].onNewInputAvailable
+    );
 }
 
 export function useOutput(label, outputType, initialOutput = null) {
@@ -72,17 +79,20 @@ export function useOutput(label, outputType, initialOutput = null) {
     useEffect(() => {
         nodeStates[nodeId].outputs[label] = {
             listeners: [],
-            value: initialOutput
+            value: initialOutput,
         };
     }, [nodeId, label, initialOutput]);
 
-    const setOutputAndPropagate = useCallback(newValue => {
-        setOutput(newValue);
-        nodeStates[nodeId].outputs[label].value = newValue;
-        nodeStates[nodeId].outputs[label].listeners.forEach(listener => listener(newValue));
-    }, [nodeId, label]);
+    const setOutputAndPropagate = useCallback(
+        (newValue) => {
+            setOutput(newValue);
+            nodeStates[nodeId].outputs[label].value = newValue;
+            nodeStates[nodeId].outputs[label].listeners.forEach((listener) => listener(newValue));
+        },
+        [nodeId, label]
+    );
 
-    return [output, setOutputAndPropagate, <Handle type={"source"} id={label} position={Position.Bottom}/>];
+    return [output, setOutputAndPropagate, <Handle type={"source"} id={label} position={Position.Bottom} />];
 }
 
 export function useInput(label, inputTypes) {
@@ -91,11 +101,11 @@ export function useInput(label, inputTypes) {
 
     useEffect(() => {
         nodeStates[nodeId].backtraces[label] = {
-            onNewInputAvailable: setInput
+            onNewInputAvailable: setInput,
         };
     }, [nodeId, label]);
 
-    return [input, <Handle type={"target"} id={label}/>];
+    return [input, <Handle type={"target"} id={label} />];
 }
 
 // The following code allows the Node ID to be implicitly captured by our hook above
@@ -122,4 +132,8 @@ for (const nodeType in inputNodeTypes) {
 
 for (const nodeType in outputNodeTypes) {
     outputNodeTypes[nodeType] = NodeWrapper(outputNodeTypes[nodeType]);
+}
+
+for (const nodeType in machineLearningNodes) {
+    machineLearningNodes[nodeType] = NodeWrapper(machineLearningNodes[nodeType]);
 }

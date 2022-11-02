@@ -52,8 +52,8 @@ export default function CSVNode() {
         <>
             <Box
                 sx={{
-                    width: 190,
-                    height: 80,
+                    minWidth: 190,
+                    minHeight: 80,
                     backgroundColor: "white",
                     padding: 2,
                     borderRadius: 2,
