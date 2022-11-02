@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { Box, FormControl, Typography, MenuItem, Select, InputLabel, OutlinedInput, Chip, Button } from "@mui/material";
 import { useInput, useOutput } from "../nodes";
 import { Stack } from "@mui/system";
-import { SocketContext } from "../SocketProvider";
 import { NodeIdContext } from "../nodes";
+import socket from "../SocketProvider";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -26,7 +26,6 @@ export default function LinearNode() {
     const [train_loss, setTrainLoss] = useState(0);
     const [val_loss, setValLoss] = useState(0);
 
-    const socket = useContext(SocketContext);
     const nodeId = useContext(NodeIdContext);
 
     // Websockets!
