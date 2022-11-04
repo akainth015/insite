@@ -16,6 +16,7 @@ import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
 import Normalization from "./Modification/Normalization";
 import { ButtonNode } from "./Input/ButtonNode";
+import Histogram from "./Output/Histogram";
 
 export const nodeIcons = {
     "Web Hook": WebhookIcon,
@@ -43,6 +44,7 @@ export const outputNodeTypes = {
     Clock: ClockNode,
     "Text Display": TextNode,
     Correlation: Correlation,
+    Histogram: Histogram,
 };
 
 const nodeStates = {};
