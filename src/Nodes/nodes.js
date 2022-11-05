@@ -15,6 +15,7 @@ import Correlation from "./Output/Correlation";
 import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
 import Normalization from "./Modification/Normalization";
+import Create_Pie_Chart from "./Output/PieChart";
 
 export const nodeIcons = {
     "Web Hook": WebhookIcon
@@ -41,6 +42,7 @@ export const outputNodeTypes = {
     Clock: ClockNode,
     "Text Display": TextNode,
     Correlation: Correlation,
+    "Pie Chart": Create_Pie_Chart
 };
 
 const nodeStates = {};
