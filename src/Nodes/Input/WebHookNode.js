@@ -1,7 +1,7 @@
-import {Handle, Position} from 'reactflow';
-import {useState} from "react";
-import {Button, Card, CardContent, Stack, Typography} from "@mui/material";
-import {ContentCopy} from "@mui/icons-material";
+import { Handle, Position } from "reactflow";
+import { useState } from "react";
+import { Button, Card, CardContent, Stack, Typography } from "@mui/material";
+import { ContentCopy } from "@mui/icons-material";
 
 function WebHookNode() {
     const [webHookStatus, setWebHookStatus] = useState("STARTING");
@@ -23,18 +23,15 @@ function WebHookNode() {
         <Card>
             <CardContent>
                 <Stack alignItems={"center"} direction={"row"} spacing={2}>
-                    <Typography>
-                        {statusText}
-                    </Typography>
-                    {
-                        webHookStatus === "STARTED" ?
-                            <Button className={"nodrag"} variant={"outlined"} startIcon={<ContentCopy/>}>
-                                Copy URL
-                            </Button> : null
-                    }
+                    <Typography>{statusText}</Typography>
+                    {webHookStatus === "STARTED" ? (
+                        <Button className={"nodrag"} variant={"outlined"} startIcon={<ContentCopy />}>
+                            Copy URL
+                        </Button>
+                    ) : null}
                 </Stack>
             </CardContent>
-            <Handle id={"hits"} type="source" position={Position.Bottom}/>
+            <Handle id={"hits"} type="source" position={Position.Bottom} />
         </Card>
     );
 }
