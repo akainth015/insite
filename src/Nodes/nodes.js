@@ -27,6 +27,7 @@ export const modificationNodeTypes = {
     "Convert to Int": ConvertFloat,
     "Fill Missing Values": FillMissing,
     Normalization: Normalization,
+    "Drop Columns": DropNode,
 };
 
 export const inputNodeTypes = {
