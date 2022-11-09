@@ -61,7 +61,7 @@ export default function OneHot() {
     const getAllUniqueValues = (data, k) => {
         let unique = new Set();
         for (let i = 0; i < data.length; i++) {
-            if (data[i][k] !== undefined && data[i][k] !== null) {
+            if (data[i][k] !== undefined && data[i][k] !== null && data[i][k] !== "") {
                 unique.add(data[i][k]);
             }
         }
