@@ -15,6 +15,7 @@ import Correlation from "./Output/Correlation";
 import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
 import Normalization from "./Modification/Normalization";
+import { ButtonNode } from "./Input/ButtonNode";
 
 export const nodeIcons = {
     "Web Hook": WebhookIcon,
@@ -31,6 +32,7 @@ export const modificationNodeTypes = {
 };
 
 export const inputNodeTypes = {
+    Button: ButtonNode,
     "Web Hook": WebHookNode,
     "CSV File": CSVNode,
     "JSON File": JsonNode,
@@ -45,7 +47,7 @@ export const outputNodeTypes = {
 
 const nodeStates = {};
 
-const NodeIdContext = createContext(null);
+export const NodeIdContext = createContext(null);
 
 export function createNode(nodeId) {
     nodeStates[nodeId] = {

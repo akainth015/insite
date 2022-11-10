@@ -1,5 +1,5 @@
 import { CssBaseline, Stack } from "@mui/material";
-import { Routes, Route, HashRouter } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Canvas from "./Canvas";
 import Sidebar from "./Components/Sidebar";
