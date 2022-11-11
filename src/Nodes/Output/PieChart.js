@@ -31,7 +31,7 @@ const default_data = {
 };
 
 export default function Create_Pie_Chart(){
-    const [input, inputHandl] = useInput("input", "object[]");
+    const [input, inputHandl] = useInput("piechart", "object[]");
     const [data, setOutput, outputHandle] = useOutput("Output", "object[], object", default_data);
 
     useEffect(() => {
