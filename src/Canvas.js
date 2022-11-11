@@ -60,7 +60,7 @@ export default function Canvas() {
     }, []);
 
     return (
-        <Box sx = {{height: "100vh", width: "80vw", backgroundColor: "#282c34"}}>
+        <Box sx={{ height: "100vh", width: "80vw", backgroundColor: "#282c34" }}>
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
