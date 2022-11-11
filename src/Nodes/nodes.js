@@ -17,6 +17,7 @@ import JsonNode from "./Input/JsonNode";
 import Normalization from "./Modification/Normalization";
 import { ButtonNode } from "./Input/ButtonNode";
 import Create_Pie_Chart from "./Output/PieChart";
+import Stock_Ticker from "./Output/StockTicker"; 
 
 export const nodeIcons = {
     "Web Hook": WebhookIcon,
@@ -45,6 +46,7 @@ export const outputNodeTypes = {
     "Text Display": TextNode,
     Correlation: Correlation,
     "Pie Chart": Create_Pie_Chart,
+    "Stock_Ticker": Stock_Ticker,
 };
 
 const nodeStates = {};

@@ -2,8 +2,10 @@ import React from "react";
 import Chart from "chart.js/auto";
 import { Pie } from "react-chartjs-2";
 import {Card, CardContent} from "@mui/material";
-import { useState, useEffect} from "react";
+import {useEffect} from "react";
 import { useOutput, useInput } from "../nodes";
+import { Box, Typography} from "@mui/material";
+
 
 
 
@@ -17,7 +19,7 @@ const CHART_COLORS = {
     grey: 'rgb(201, 203, 207)'
   };
 
-const default_labels = ["Input a csv file through a connectoin"];
+const default_labels = null
 const default_data = {
   labels: default_labels,
   datasets: [
@@ -61,7 +63,17 @@ export default function Create_Pie_Chart(){
     }
 
     return(
-        <Card>
+        <Box
+        display="flex"
+        flexDirection="column"
+        sx={{
+            backgroundColor: "white",
+            padding: 2,
+            borderRadius: 2,
+        }}
+        >
+        <Typography variant="h7"> Input a csv file through a connection</Typography>
+
             {inputHandl}
             <CardContent>
                 <div>
@@ -71,7 +83,8 @@ export default function Create_Pie_Chart(){
             {outputHandle}
             
 
-        </Card>
+
+        </Box>
         
     )
 
