@@ -16,12 +16,15 @@ import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
 import Normalization from "./Modification/Normalization";
 import { ButtonNode } from "./Input/ButtonNode";
+import Concatenation from "./Modification/Concatenation";
+import { Tooltip } from "@mui/material";
 
 export const nodeIcons = {
     "Web Hook": WebhookIcon,
 };
 
 export const modificationNodeTypes = {
+    Concatenation: Concatenation,
     "Filter Node": FilterNode,
     "5ST": FiveSTimer,
     "OneHot Encoding": OneHot,
@@ -89,7 +92,22 @@ export function useOutput(label, outputType, initialOutput = null) {
         [nodeId, label]
     );
 
-    return [output, setOutputAndPropagate, <Handle type={"source"} id={label} position={Position.Bottom} />];
+    const rightOffset = Object.keys(nodeStates[nodeId].outputs).indexOf(label);
+    const handle = (
+        <>
+            <Tooltip title={label}>
+                <Handle
+                    type={"source"}
+                    id={label}
+                    position={Position.Bottom}
+                    style={{
+                        left: `calc(100% - 20px - ${30 * rightOffset}px`,
+                    }}
+                />
+            </Tooltip>
+        </>
+    );
+    return [output, setOutputAndPropagate, handle];
 }
 
 export function useInput(label, inputTypes) {
@@ -102,7 +120,21 @@ export function useInput(label, inputTypes) {
         };
     }, [nodeId, label]);
 
-    return [input, <Handle type={"target"} id={label} />];
+    const leftOffset = Object.keys(nodeStates[nodeId].backtraces).indexOf(label);
+    const handle = (
+        <>
+            <Tooltip title={label}>
+                <Handle
+                    type={"target"}
+                    id={label}
+                    style={{
+                        left: 20 + 30 * leftOffset,
+                    }}
+                />
+            </Tooltip>
+        </>
+    );
+    return [input, handle];
 }
 
 // The following code allows the Node ID to be implicitly captured by our hook above
