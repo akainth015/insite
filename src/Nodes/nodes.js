@@ -25,6 +25,7 @@ import LineChart from "./Output/LineChart";
 import WordCloudChart from "./Output/WordCloudChart";
 import { Tooltip } from "@mui/material";
 import AggregateNode from "./Modification/AggregateNode";
+import AnalysisNode from "./Modification/AnalysisNode";
 
 export const nodeIcons = {
     "CSV File": Code,
@@ -33,6 +34,7 @@ export const nodeIcons = {
 };
 
 export const modificationNodeTypes = {
+    "Natural Language Analysis": AnalysisNode,
     "Merge Values": MergeNode,
     "Change Detector": EdgeDetectionNode,
     Aggregator: AggregateNode,
