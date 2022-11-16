@@ -16,13 +16,10 @@ import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
 import Normalization from "./Modification/Normalization";
 import LinearNode from "./MachineLearning/Linear";
+import { ButtonNode } from "./Input/ButtonNode";
 
 export const nodeIcons = {
     "Web Hook": WebhookIcon,
-};
-
-export const machineLearningNodes = {
-    "Linear Regression": LinearNode,
 };
 
 export const modificationNodeTypes = {
@@ -33,9 +30,11 @@ export const modificationNodeTypes = {
     "Convert to Int": ConvertFloat,
     "Fill Missing Values": FillMissing,
     Normalization: Normalization,
+    "Drop Columns": DropNode,
 };
 
 export const inputNodeTypes = {
+    Button: ButtonNode,
     "Web Hook": WebHookNode,
     "CSV File": CSVNode,
     "JSON File": JsonNode,
@@ -48,9 +47,13 @@ export const outputNodeTypes = {
     Correlation: Correlation,
 };
 
+export const machineLearningNodes = {
+    Linear: LinearNode,
+};
+
 const nodeStates = {};
 
-const NodeIdContext = createContext(null);
+export const NodeIdContext = createContext(null);
 
 export function createNode(nodeId) {
     nodeStates[nodeId] = {
