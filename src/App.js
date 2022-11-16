@@ -4,6 +4,8 @@ import "./App.css";
 import Canvas from "./Canvas";
 import Sidebar from "./Components/Sidebar";
 import LandingPage from "./LandingPage";
+import Login from "./Firebase/login";
+import SignUp from "./Firebase/signup";
 
 function App() {
     return (
@@ -11,6 +13,8 @@ function App() {
             <HashRouter>
                 <Routes>
                     <Route path="/" element={<LandingPage />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<SignUp />} />
                     <Route
                         path="/trialCanvas"
                         element={

@@ -1,10 +1,12 @@
 import { Box, Stack, Typography, Button } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const url =
     "https://www.singlestore.com/images/cms/blog-posts/img_blog_post_hero_refactoring-singlestores-visual-explain-to-use-react-flow.png";
 
 export default function SignupPrompt() {
+    const navigate = useNavigate();
     return (
         <>
             <Box
@@ -38,6 +40,9 @@ export default function SignupPrompt() {
                         </Typography>
                         <Button
                             variant="contained"
+                            onClick={() => {
+                                navigate("/signup");
+                            }}
                             sx={{
                                 width: "10vw",
                                 backgroundColor: "white",
