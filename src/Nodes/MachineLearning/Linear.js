@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { Box, FormControl, Typography, MenuItem, Select, InputLabel, OutlinedInput, Chip, Button } from "@mui/material";
 import { useInput, useOutput, NodeIdContext } from "../nodes";
 import { Stack } from "@mui/system";
-import { io } from "socket.io-client";
+import { NodeIdContext } from "../nodes";
+import socket from "../SocketProvider";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -15,9 +16,6 @@ const MenuProps = {
     },
 };
 
-// outside of your component, initialize the socket variable
-let socket;
-
 export default function LinearNode() {
     const [input, inputHndl] = useInput("input", ["object[]"]);
     const [output, setOutput, outputHndl] = useOutput("output", "object[]", input);
@@ -25,23 +23,19 @@ export default function LinearNode() {
     const [x_train, setX] = useState([]);
     const [y_train, setY] = useState("");
     const [trainingCompleted, setTrainingCompleted] = useState(false);
-    const [train_loss, setTrainLoss] = useState(0);
-    const [val_loss, setValLoss] = useState(0);
+    const [result, setResult] = useState(null);
+
     const nodeId = useContext(NodeIdContext);
 
     // Websockets!
     useEffect(() => {
-        socket = io();
-
         socket.on("linear", (data) => {
-            setTrainLoss(data.train_loss);
-            setValLoss(data.val_loss);
-            setTrainingCompleted(true);
+            console.log("linear response", data);
+            if (data.nodeId === nodeId) {
+                setResult(data);
+                setTrainingCompleted(true);
+            }
         });
-
-        return () => {
-            socket.disconnect();
-        };
     }, []);
 
     useEffect(() => {
@@ -165,8 +159,16 @@ export default function LinearNode() {
                     {trainingCompleted && (
                         <Stack direction="column">
                             <Typography variant="h7">Training Completed!</Typography>
-                            <Typography variant="h7">Training Loss: {train_loss}</Typography>
-                            <Typography variant="h7">Validation Loss: {val_loss}</Typography>
+                            {
+                                // Output each element in the result object
+                                Object.keys(result).map((key) => {
+                                    return (
+                                        <Typography variant="h7" key={key}>
+                                            {key}: {result[key]}
+                                        </Typography>
+                                    );
+                                })
+                            }
                         </Stack>
                     )}
                 </Stack>

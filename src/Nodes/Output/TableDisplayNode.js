@@ -11,7 +11,7 @@ export default function TableDisplayNode(data) {
     React.useEffect(() => {
         setLoading(true);
         if (input) {
-            setProcessedInput(input.slice(0, 5));
+            setProcessedInput(input.slice(0, 10));
             setLoading(false);
             setOutput(input);
         }
