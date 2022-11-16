@@ -1,8 +1,22 @@
-import { Box, Typography, Stack, IconButton } from "@mui/material";
+import { Box, Typography, Stack, IconButton, Menu, MenuItem, Button } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import React from "react";
+import { logOut, useAuthUser } from "../Firebase/Auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Topbar() {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const user = useAuthUser();
+    const open = Boolean(anchorEl);
+    const navigate = useNavigate();
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
     return (
         <>
             <Box
@@ -32,9 +46,30 @@ export default function Topbar() {
                         top: 0,
                     }}
                 >
-                    <IconButton title="Menu">
-                        <MenuIcon />
-                    </IconButton>
+                    {user === null && (
+                        <>
+                            <IconButton title="Menu" onClick={handleClick}>
+                                <MenuIcon />
+                            </IconButton>
+                            <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                                <MenuItem
+                                    onClick={() => {
+                                        navigate("/login");
+                                    }}
+                                >
+                                    Login
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        navigate("/signup");
+                                    }}
+                                >
+                                    Sign Up
+                                </MenuItem>
+                            </Menu>
+                        </>
+                    )}
+                    {user !== null && <Button onClick={logOut}>Log Out</Button>}
                 </Box>
             </Box>
         </>
