@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Box, FormControl, Typography, MenuItem, Select, InputLabel, OutlinedInput, Chip, Button } from "@mui/material";
 import { useInput, useOutput, NodeIdContext } from "../nodes";
 import { Stack } from "@mui/system";
-import { NodeIdContext } from "../nodes";
-import socket from "../SocketProvider";
+import { backendUrl, useSocketIoChannel } from "../../backend";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -24,19 +23,14 @@ export default function LinearNode() {
     const [y_train, setY] = useState("");
     const [trainingCompleted, setTrainingCompleted] = useState(false);
     const [result, setResult] = useState(null);
+    const [emitOnChannel, addActivationListener] = useSocketIoChannel("linear");
 
-    const nodeId = useContext(NodeIdContext);
-
-    // Websockets!
     useEffect(() => {
-        socket.on("linear", (data) => {
-            console.log("linear response", data);
-            if (data.nodeId === nodeId) {
-                setResult(data);
-                setTrainingCompleted(true);
-            }
+        return addActivationListener((data) => {
+            setResult(data);
+            setTrainingCompleted(true);
         });
-    }, []);
+    }, [addActivationListener]);
 
     useEffect(() => {
         if (input) {
@@ -88,7 +82,7 @@ export default function LinearNode() {
                 x.push(temp);
                 y.push(input[i][y_train]);
             }
-            socket.emit("linear", nodeId, x, y, x_labels, y_labels);
+            emitOnChannel(x, y, x_labels, y_labels);
         }
     };
 
