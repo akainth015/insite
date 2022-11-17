@@ -1,6 +1,6 @@
 {
-    "name": "reactclient",
-    "version": "0.1.0",
+    "name": "insite",
+    "version": "1.0.0",
     "private": true,
     "dependencies": {
         "@emotion/react": "^11.10.4",
@@ -11,8 +11,11 @@
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^14.4.3",
         "d3": "^4.2.2",
+        "dotenv": "^16.0.3",
+        "firebase": "^9.13.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-router-dom": "^6.4.3",
         "react-scripts": "5.0.1",
         "reactflow": "^11.1.0",
         "socket.io-client": "^4.5.3",
@@ -23,13 +26,21 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "prepare": "husky install"
     },
     "eslintConfig": {
         "extends": [
             "react-app",
-            "react-app/jest"
-        ]
+            "react-app/jest",
+            "prettier"
+        ],
+        "rules": {
+            "no-restricted-syntax": [
+                "error",
+                "SequenceExpression"
+            ]
+        }
     },
     "browserslist": {
         "production": [
@@ -42,5 +53,19 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "lint-staged": {
+        "*.js": [
+            "eslint --fix",
+            "prettier --write --ignore-unknown"
+        ]
+    },
+    "devDependencies": {
+        "eslint-config-prettier": "^8.5.0",
+        "husky": "^8.0.1",
+        "lint-staged": "^13.0.3",
+        "prettier": "2.7.1",
+        "webpack": "^5.75.0",
+        "webpack-cli": "^4.10.0"
     }
 }
