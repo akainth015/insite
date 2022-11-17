@@ -16,7 +16,7 @@ function TextNode() {
 
     return (
         <Card>
-            <CardContent>{text}</CardContent>
+            <CardContent>{`${text}`}</CardContent>
             {TIHandle}
         </Card>
     );
