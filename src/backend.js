@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 import { NodeIdContext } from "./Nodes/nodes";
 import { useCallback, useContext } from "react";
 
-let backendUrl = "http://localhost:5000/";
+export const backendUrl = "http://localhost:5000/";
 export const socket = io(backendUrl);
 
 export function useSocketIoChannel(channelName) {
@@ -13,9 +13,10 @@ export function useSocketIoChannel(channelName) {
     }
 
     function register(eventHandler) {
-        socket.on(channelName, function (data) {
-            if (eventHandler._isActive === true && data.nodeId === nodeId) {
-                eventHandler(data);
+        eventHandler._isActive = true;
+        socket.on(channelName, function (msgNodeId) {
+            if (eventHandler._isActive === true && msgNodeId === nodeId) {
+                eventHandler(...[...arguments].slice(1));
             }
         });
 
