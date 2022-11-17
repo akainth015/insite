@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 import { NodeIdContext } from "./Nodes/nodes";
 import { useCallback, useContext } from "react";
 
-export const backendUrl = "http://localhost:5000/";
+export const backendUrl = "http://127.0.0.1:5000";
 export const socket = io(backendUrl);
 
 export function useSocketIoChannel(channelName) {
