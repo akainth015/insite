@@ -16,8 +16,6 @@ import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
 import Normalization from "./Modification/Normalization";
 import { ButtonNode } from "./Input/ButtonNode";
-import Create_Pie_Chart from "./Output/PieChart";
-import Stock_Ticker from "./Output/StockTicker"; 
 
 export const nodeIcons = {
     "Web Hook": WebhookIcon,
@@ -45,8 +43,6 @@ export const outputNodeTypes = {
     Clock: ClockNode,
     "Text Display": TextNode,
     Correlation: Correlation,
-    "Pie Chart": Create_Pie_Chart,
-    "Stock_Ticker": Stock_Ticker,
 };
 
 const nodeStates = {};
@@ -109,8 +105,6 @@ export function useInput(label, inputTypes) {
     return [input, <Handle type={"target"} id={label} />];
 }
 
-
-//
 // The following code allows the Node ID to be implicitly captured by our hook above
 // without needing to be explicitly threaded through the various hooks and functions
 // that get called
