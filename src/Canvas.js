@@ -4,7 +4,7 @@ import "reactflow/dist/style.css";
 import { v4 as uuidv4 } from "uuid";
 
 import { Box } from "@mui/system";
-import { createNode, inputNodeTypes, modificationNodeTypes, outputNodeTypes, onNewConnection } from "./Nodes/nodes";
+import { createNode, inputNodeTypes, modificationNodeTypes, outputNodeTypes, createConnection } from "./Nodes/nodes";
 
 const proOptions = { hideAttribution: true };
 
@@ -16,14 +16,10 @@ export default function Canvas() {
     const onConnect = useCallback(
         (connection) => {
             console.debug(`Connection created`, connection);
-            nodes.find((node) => node.id === connection.target).data[connection.targetHandle] = {
-                nodeId: connection.source,
-                channel: connection.sourceHandle,
-            };
-            onNewConnection(connection);
+            createConnection(connection);
             setEdges((edges) => addEdge(connection, edges));
         },
-        [nodes, setEdges]
+        [setEdges]
     );
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -40,7 +36,7 @@ export default function Canvas() {
             if (typeof type === "undefined" || type === null) {
                 return;
             }
-            console.log(`Found a request to create a ${type} node`);
+            console.log(`Creating a ${type} node`);
 
             const position = reactFlowInstance.project({
                 x: event.clientX,
@@ -64,7 +60,7 @@ export default function Canvas() {
     }, []);
 
     return (
-        <Box sx = {{height: "100vh", width: "80vw", backgroundColor: "#282c34"}}>
+        <Box sx={{ height: "100vh", width: "80vw", backgroundColor: "#282c34" }}>
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -75,7 +71,6 @@ export default function Canvas() {
                 onDragOver={onDragOver}
                 onLoad={setReactFlowInstance}
                 onInit={setReactFlowInstance}
-                fitView
                 nodeTypes={nodeTypes}
                 proOptions={proOptions}
             >

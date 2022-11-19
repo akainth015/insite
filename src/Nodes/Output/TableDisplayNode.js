@@ -1,6 +1,6 @@
 import React from "react";
 import { useInput, useOutput } from "../nodes";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 
 export default function TableDisplayNode(data) {
     const [input, inputHndl] = useInput("input", ["object[]", "object"]);
@@ -16,6 +16,15 @@ export default function TableDisplayNode(data) {
             setOutput(input);
         }
     }, [input]);
+
+    const downloadFile = () => {
+        const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(JSON.stringify(input))}`;
+        const link = document.createElement("a");
+        link.href = jsonString;
+        link.download = "data.json";
+
+        link.click();
+    };
 
     return (
         <>
@@ -37,16 +46,17 @@ export default function TableDisplayNode(data) {
                                     <th key={key}>{key}</th>
                                 ))}
                             </tr>
-                            {processedInput.map((item) => (
-                                <tr key={item[1]}>
-                                    {Object.values(item).map((val) => (
-                                        <td key={val}>{val}</td>
+                            {processedInput.map((item, index) => (
+                                <tr key={index}>
+                                    {Object.keys(item).map((key) => (
+                                        <td key={key}>{item[key]}</td>
                                     ))}
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 )}
+                {input && <Button onClick={downloadFile}>Download JSON</Button>}
             </Box>
             {inputHndl}
             {outputHndl}

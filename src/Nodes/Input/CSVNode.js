@@ -9,6 +9,9 @@ export default function CSVNode() {
         const file = e.target.files[0];
         fileReader.onload = function (e) {
             let csv = fileReader.result;
+            // Replace \r\n and \r with \n
+            csv = csv.replaceAll("\r\n", "\n");
+            csv = csv.replaceAll("\r", "\n");
             let lines = csv.split("\n");
             let result = [];
             let headers = lines[0].split(",");
