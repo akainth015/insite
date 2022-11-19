@@ -175,67 +175,9 @@ export function useInput(label, inputTypes) {
         nodeStates[nodeId].backtraces[label] = {
             onNewInputAvailable: setInput,
         };
+    }, [nodeId, label]);
 
-        setTimeout(updateNodeInternals, 30, nodeId);
-    }, [nodeId, label, updateNodeInternals]);
-
-    const leftOffset = Object.keys(nodeStates[nodeId].backtraces).indexOf(label);
-    const handle = (
-        <>
-            <Tooltip title={label}>
-                <Handle
-                    type={"target"}
-                    id={label}
-                    style={{
-                        left: 20 + 30 * leftOffset,
-                    }}
-                />
-            </Tooltip>
-        </>
-    );
-    return [input, handle];
-}
-
-// A strict input can be used to run a function every time an output is published,
-// even when the value is not changed.
-export function useStrictInput(label, inputTypes) {
-    const nodeId = useContext(NodeIdContext);
-    const updateNodeInternals = useUpdateNodeInternals();
-    const listeners = useRef([]);
-
-    useEffect(() => {
-        nodeStates[nodeId].backtraces[label] = {
-            onNewInputAvailable(newValue) {
-                listeners.current.forEach((listener) => {
-                    listener(newValue);
-                });
-            },
-        };
-        setTimeout(updateNodeInternals, 15, nodeId);
-    }, [nodeId, label, updateNodeInternals]);
-
-    const subscribeChanges = useCallback((listener) => {
-        listeners.current.push(listener);
-        return () => {
-            listener.current = listeners.current.filter((it) => it !== listener);
-        };
-    }, []);
-
-    const leftOffset = Object.keys(nodeStates[nodeId].backtraces).indexOf(label);
-    const handle = (
-        <>
-            <Tooltip title={label}>
-                <Handle
-                    type={"target"}
-                    id={label}
-                    style={{
-                        left: 20 + 30 * leftOffset,
-                    }}
-                />
-            </Tooltip>
-        </>
-    );
-    return [subscribeChanges, handle];
+    return [input, <Handle type={"target"} id={label} />];
 }
 
 
