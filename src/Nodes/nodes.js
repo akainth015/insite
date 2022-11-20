@@ -21,7 +21,6 @@ import { Tooltip } from "@mui/material";
 import EdgeDetectionNode from "./Modification/EdgeDetectionNode";
 import IntegratorNode from "./Modification/IntegratorNode";
 import Pie_Chart from "./Output/PieChart";
-import Stock_Ticker from "./Output/StockTicker"; 
 
 export const nodeIcons = {
     "CSV File": Code,

@@ -3,7 +3,16 @@ import { NodeIdContext } from "./Nodes/nodes";
 import { useCallback, useContext } from "react";
 
 export const backendUrl = "http://localhost:5000/";
-export const socket = io(backendUrl);
+
+
+export var socket = io(backendUrl, {
+    transports: ["websocket"],
+    cors: {
+      origin: "http://localhost:3000/",
+      credentials: true,
+    },
+  });
+
 
 export function useSocketIoChannel(channelName) {
     const nodeId = useContext(NodeIdContext);
