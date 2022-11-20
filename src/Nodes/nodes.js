@@ -45,7 +45,6 @@ export const outputNodeTypes = {
     Clock: ClockNode,
     "Text Display": TextNode,
     Correlation: Correlation,
-    "Pie Chart": Pie_Chart,
 };
 
 const nodeStates = {};
