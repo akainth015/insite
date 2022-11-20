@@ -20,6 +20,8 @@ import Concatenation from "./Modification/Concatenation";
 import { Tooltip } from "@mui/material";
 import EdgeDetectionNode from "./Modification/EdgeDetectionNode";
 import IntegratorNode from "./Modification/IntegratorNode";
+import Pie_Chart from "./Output/PieChart";
+import Stock_Ticker from "./Output/StockTicker"; 
 
 export const nodeIcons = {
     "CSV File": Code,
@@ -52,6 +54,7 @@ export const outputNodeTypes = {
     Clock: ClockNode,
     "Text Display": TextNode,
     Correlation: Correlation,
+    "Pie Chart": Pie_Chart,
 };
 
 let nodeStates = {};
@@ -235,6 +238,8 @@ export function useStrictInput(label, inputTypes) {
     return [subscribeChanges, handle];
 }
 
+
+//
 // The following code allows the Node ID to be implicitly captured by our hook above
 // without needing to be explicitly threaded through the various hooks and functions
 // that get called
@@ -260,3 +265,4 @@ for (const nodeType in inputNodeTypes) {
 for (const nodeType in outputNodeTypes) {
     outputNodeTypes[nodeType] = NodeWrapper(outputNodeTypes[nodeType]);
 }
+
