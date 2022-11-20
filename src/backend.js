@@ -4,7 +4,6 @@ import { useCallback, useContext } from "react";
 
 export const backendUrl = "http://localhost:5000/";
 
-
 export var socket = io(backendUrl, {
     transports: ["websocket"],
     cors: {
@@ -12,7 +11,6 @@ export var socket = io(backendUrl, {
       credentials: true,
     },
   });
-
 
 export function useSocketIoChannel(channelName) {
     const nodeId = useContext(NodeIdContext);
