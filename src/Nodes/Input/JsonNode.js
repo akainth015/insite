@@ -1,37 +1,42 @@
 import { useOutput } from "../nodes";
-import React from "react";
-import { Box, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Paper, Typography } from "@mui/material";
+import FileInput from "../../Components/FileInput";
+
+const FILE_INDEX = 0;
 
 export default function JsonNode() {
-    const [, setOutput, outputHandle] = useOutput("Output", "object", {});
-    const fileReader = new FileReader();
-    const onFileChange = (e) => {
-        const file = e.target.files[0];
-        fileReader.onload = function () {
-            let result = JSON.parse(fileReader.result);
-            setOutput(result);
-        };
-        fileReader.readAsText(file);
+    const [, setOutput, outputHandle] = useOutput("JSON", "object", null);
+    const [jsonFile, setJsonFile] = useState(null);
+
+    const parseAndOutput = (files) => {
+        const file = files[FILE_INDEX] || null;
+        setJsonFile(file);
     };
+
+    useEffect(() => {
+        if (jsonFile !== null) {
+            const fileReader = new FileReader();
+            fileReader.addEventListener("load", () => {
+                const data = JSON.parse(fileReader.result);
+                setOutput(data);
+            });
+            fileReader.readAsText(jsonFile);
+        }
+    }, [jsonFile, setOutput]);
 
     return (
         <>
-            <Box
+            <Paper
                 sx={{
-                    width: 190,
-                    height: 80,
-                    backgroundColor: "white",
                     padding: 2,
-                    borderRadius: 2,
-                    alignItems: "center",
-                    alignText: "center",
                 }}
             >
-                <Typography variant="h7">JSON Node</Typography>
-                <form>
-                    <input type="file" id="csvFile" name="csvFile" accept=".json" onChange={onFileChange} />
-                </form>
-            </Box>
+                <Typography align="center" mb={1}>
+                    JSON File Input
+                </Typography>
+                <FileInput accept="text/json,application/json,.json" onChange={parseAndOutput} />
+            </Paper>
             {outputHandle}
         </>
     );
