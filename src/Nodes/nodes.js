@@ -18,13 +18,13 @@ import { ButtonNode } from "./Input/ButtonNode";
 import { Code, DataObject, Webhook } from "@mui/icons-material";
 import MergeNode from "./Modification/MergeNode";
 import EdgeDetectionNode from "./Modification/EdgeDetectionNode";
-import AggregateNode from "./Modification/AggregateNode";
 import TextTokenization from "./Modification/TextTokenization";
 import TextInputNode from "./Input/TextInputNode";
 import HistogramChart from "./Output/HistogramChart";
 import LineChart from "./Output/LineChart";
 import WordCloudChart from "./Output/WordCloudChart";
 import { Tooltip } from "@mui/material";
+import AggregateNode from "./Modification/AggregateNode";
 
 export const nodeIcons = {
     "CSV File": Code,
