@@ -3,24 +3,27 @@ import { Stack } from "@mui/system";
 import { useEffect } from "react";
 import { useInput, useOutput } from "../nodes";
 
-// Need to check for weird inputs ( non arrays / array of objects / etc.)
 export default function TextTokenization() {
-    var [input, inputHndl] = useInput("input",["object[]"]);
-    const [output, setOutput, outputHndl] = useOutput("output","object[]",input);
+    var [input, inputHndl] = useInput("input","string");
+    const [output, setOutput, outputHndl] = useOutput("output","string[]",input);
 
     useEffect(() => {
+
         if(input) {
-            const newData = processData(input);
-            console.log(newData);
-            setOutput(newData);
+            // Only allow for string type inputs to tokenize, else do log error
+            if(typeof(input) === 'string') { 
+                const newData = processData(input);
+                setOutput(newData);
+            } else {
+                console.log("TextTokenizationError: Input must be type string.");
+            }
         }
+        
     }, [input]);
 
+    // Regex Tokenize Input Data
     const processData = (input) => {
-        if(typeof(input) === 'object') {
-        } else {
-            return(input.split(/[ ,\n]+/));
-        }
+        return(input.split(/[ ,\n]+/));
     }
 
     return (

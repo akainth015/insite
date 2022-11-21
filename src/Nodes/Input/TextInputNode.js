@@ -28,7 +28,7 @@ export default function TextInputNode() {
             <Box
                 sx={{
                     width: 200,
-                    height: 100,
+                    height: 120,
                     backgroundColor: "white",
                     padding: 2,
                     borderRadius: 2,
