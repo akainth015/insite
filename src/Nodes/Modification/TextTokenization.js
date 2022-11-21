@@ -3,9 +3,11 @@ import { Stack } from "@mui/system";
 import { useEffect } from "react";
 import { useInput, useOutput } from "../nodes";
 
+const empty_arr = [];
+
 export default function TextTokenization() {
     var [input, inputHndl] = useInput("input","string");
-    const [output, setOutput, outputHndl] = useOutput("output","string[]",input);
+    const [output, setOutput, outputHndl] = useOutput("output","string[]",empty_arr);
 
     useEffect(() => {
 
@@ -14,6 +16,7 @@ export default function TextTokenization() {
             if(typeof(input) === 'string') { 
                 const newData = processData(input);
                 setOutput(newData);
+                console.log(newData);
             } else {
                 console.log("TextTokenizationError: Input must be type string.");
             }
@@ -23,7 +26,12 @@ export default function TextTokenization() {
 
     // Regex Tokenize Input Data
     const processData = (input) => {
-        return(input.split(/[ ,\n]+/));
+        let split_input = input.split(/[ ,!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?\n]+/);
+        // Check if the last character is a newline ( regex wont capture it from the textarea )
+        if(split_input[split_input.length-1] === "") {
+            split_input.splice(-1);
+        }
+        return split_input;
     }
 
     return (
