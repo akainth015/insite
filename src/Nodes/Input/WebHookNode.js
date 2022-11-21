@@ -32,6 +32,7 @@ function WebHookNode() {
                 </Button>
             </Stack>
             {activationHandle}
+            {dataHandle}
         </Paper>
     );
 }
