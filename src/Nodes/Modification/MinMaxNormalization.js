@@ -3,34 +3,27 @@ import { Paper, Typography } from "@mui/material";
 import ColumnSelect from "../../Components/ColumnSelect";
 import { useEffect } from "react";
 
-const getAllUniqueValues = (data, k) => {
-    let unique = new Set();
+const normalize = (data, category) => {
+    let min = data[0][category];
+    let max = data[0][category];
+
     for (let i = 0; i < data.length; i++) {
-        if (data[i][k] !== undefined && data[i][k] !== null && data[i][k] !== "") {
-            unique.add(data[i][k]);
+        if (data[i][category] < min) {
+            min = data[i][category];
+        }
+        if (data[i][category] > max) {
+            max = data[i][category];
         }
     }
-    unique = Array.from(unique);
-    return unique;
-};
 
-const encodeCategory = (data, category, values) => {
+    let range = max - min;
+
     for (let i = 0; i < data.length; i++) {
-        for (let j = 0; j < values.length; j++) {
-            if (values[j] === undefined) {
-                continue;
-            }
-            if (data[i][category] === values[j]) {
-                data[i][values[j]] = 1;
-            } else {
-                data[i][values[j]] = 0;
-            }
-        }
-        delete data[i][category];
+        data[i][category] = (data[i][category] - min) / range;
     }
 };
 
-export default function OneHotEncodingNode() {
+export default function MinMaxNormalizationNode() {
     const [input, inputHandle] = useInput("Input", ["table"]);
     const [, setOutput, outputHandle] = useOutput("Normalized Data", "table", input);
 
@@ -38,12 +31,11 @@ export default function OneHotEncodingNode() {
 
     useEffect(() => {
         if (input) {
-            let output = structuredClone(input);
+            let output = input;
             colsSelected.forEach((col) => {
-                const uniqueValues = getAllUniqueValues(output, col);
-                output.columns = output.columns.concat(uniqueValues).filter((it) => it !== col);
-                encodeCategory(output, col, uniqueValues);
+                normalize(output, col);
             });
+            output.columns = input ? input.columns : [];
             setOutput(output);
         }
     }, [colsSelected, input, setOutput]);
@@ -57,7 +49,7 @@ export default function OneHotEncodingNode() {
                 }}
             >
                 <Typography mb={1} align="center">
-                    OneHot Encoding
+                    Min-Max Normalization
                 </Typography>
                 <ColumnSelect
                     sx={{ mb: 2 }}

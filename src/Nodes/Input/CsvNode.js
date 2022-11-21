@@ -18,15 +18,17 @@ export default function CsvNode() {
     useEffect(() => {
         if (csvFile !== null) {
             Papa.parse(csvFile, {
+                dynamicTyping: true,
                 header: true,
                 complete(results) {
-                    const { errors, data } = results;
+                    const { errors, data, meta } = results;
 
                     let wereErrors = errors.length > 0;
                     if (wereErrors) {
                         console.warn(`Errors were encountered while parsing ${csvFile.name}`, errors);
                     }
 
+                    data.columns = meta.fields;
                     setOutput(data);
                 },
             });

@@ -6,20 +6,20 @@ import { Handle, Position, useUpdateNodeInternals } from "reactflow";
 import FiveSTimer from "./Modification/FiveSTimer";
 import CsvNode from "./Input/CsvNode";
 import TableDisplayNode from "./Output/TableDisplayNode";
-import DropNode from "./Modification/DropNode";
+import FilterColumnsNode from "./Modification/FilterColumnsNode";
 import OneHot from "./Modification/OneHot";
-import ConvertFloat from "./Modification/ConvertFloat";
+import ConvertToNumberNode from "./Modification/ConvertToNumberNode";
 import FillMissing from "./Modification/MissingValue";
 import Correlation from "./Output/Correlation";
-import FilterNode from "./Modification/Filter";
+import FilterValuesNode from "./Modification/FilterValuesNode";
 import JsonNode from "./Input/JsonNode";
-import Normalization from "./Modification/Normalization";
+import Normalization from "./Modification/MinMaxNormalization";
 import { ButtonNode } from "./Input/ButtonNode";
 import { Code, DataObject, Webhook } from "@mui/icons-material";
-import Concatenation from "./Modification/Concatenation";
+import MergeNode from "./Modification/MergeNode";
 import { Tooltip } from "@mui/material";
 import EdgeDetectionNode from "./Modification/EdgeDetectionNode";
-import IntegratorNode from "./Modification/IntegratorNode";
+import AggregateNode from "./Modification/AggregateNode";
 
 export const nodeIcons = {
     "CSV File": Code,
@@ -28,16 +28,16 @@ export const nodeIcons = {
 };
 
 export const modificationNodeTypes = {
-    Concatenation: Concatenation,
+    "Merge Values": MergeNode,
     "Change Detector": EdgeDetectionNode,
-    Integrator: IntegratorNode,
-    "Filter Node": FilterNode,
+    Aggregator: AggregateNode,
+    "Filter Values": FilterValuesNode,
     "5ST": FiveSTimer,
     "OneHot Encoding": OneHot,
-    "Convert to Int": ConvertFloat,
-    "Fill Missing Values": FillMissing,
+    "Convert to Int": ConvertToNumberNode,
+    "Handle Missing Values": FillMissing,
     Normalization: Normalization,
-    "Drop Columns": DropNode,
+    "Filter Columns": FilterColumnsNode,
 };
 
 export const inputNodeTypes = {
@@ -74,6 +74,7 @@ export function createNode(nodeId) {
     nodeStates[nodeId] = nodeStates[nodeId] || {
         backtraces: {}, // the backtrace is a mapping from the input label to the output channel of the node that provides the input
         outputs: {}, // the output dictionary stores the latest output value on each channel
+        settings: {}, // the serializable settings for nodes
     };
     return () => {
         delete nodeStates[nodeId];
@@ -129,12 +130,13 @@ export function useOutput(label, outputType, initialOutput = null) {
     const [output, setOutput] = useState(initialOutput);
 
     useEffect(() => {
-        nodeStates[nodeId].outputs[label] = {
+        nodeStates[nodeId].outputs[label] = nodeStates[nodeId].outputs[label] || {
             listeners: [],
             value: initialOutput,
         };
+        nodeStates[nodeId].outputs[label].outputType = outputType;
         setTimeout(updateNodeInternals, 15, nodeId);
-    }, [nodeId, label, initialOutput, updateNodeInternals]);
+    }, [nodeId, label, initialOutput, updateNodeInternals, outputType]);
 
     const setOutputAndPropagate = useCallback(
         (newValue) => {
@@ -145,6 +147,11 @@ export function useOutput(label, outputType, initialOutput = null) {
         [nodeId, label]
     );
 
+    function isValidConnection({ target, targetHandle }) {
+        const inputTypes = nodeStates[target].backtraces[targetHandle].inputTypes;
+        return inputTypes === "any" || inputTypes.indexOf(outputType) > -1;
+    }
+
     const rightOffset = Object.keys(nodeStates[nodeId].outputs).indexOf(label);
     const handle = (
         <>
@@ -152,6 +159,7 @@ export function useOutput(label, outputType, initialOutput = null) {
                 <Handle
                     type={"source"}
                     id={label}
+                    isValidConnection={isValidConnection}
                     position={Position.Bottom}
                     style={{
                         left: `calc(100% - 20px - ${30 * rightOffset}px`,
@@ -169,12 +177,31 @@ export function useInput(label, inputTypes) {
     const [input, setInput] = useState(null);
 
     useEffect(() => {
-        nodeStates[nodeId].backtraces[label] = {
-            onNewInputAvailable: setInput,
+        nodeStates[nodeId].backtraces[label] = nodeStates[nodeId].backtraces[label] || {
+            onNewInputAvailable: (newInput) => {
+                setInput(structuredClone(newInput));
+            },
         };
+        nodeStates[nodeId].backtraces[label].inputTypes = inputTypes;
 
         setTimeout(updateNodeInternals, 30, nodeId);
-    }, [nodeId, label, updateNodeInternals]);
+    }, [nodeId, label, updateNodeInternals, inputTypes]);
+
+    const { source, sourceHandle } = nodeStates[nodeId].backtraces[label] || {
+        source: null,
+        sourceHandle: null,
+    };
+
+    let inputType = null;
+    let niceName = sourceHandle;
+    if (source && sourceHandle) {
+        inputType = nodeStates[source].outputs[sourceHandle].outputType;
+    }
+
+    function isValidConnection({ source, sourceHandle }) {
+        const oType = nodeStates[source].outputs[sourceHandle].outputType;
+        return inputTypes === "any" || inputTypes.indexOf(oType) > -1;
+    }
 
     const leftOffset = Object.keys(nodeStates[nodeId].backtraces).indexOf(label);
     const handle = (
@@ -183,6 +210,7 @@ export function useInput(label, inputTypes) {
                 <Handle
                     type={"target"}
                     id={label}
+                    isValidConnection={isValidConnection}
                     style={{
                         left: 20 + 30 * leftOffset,
                     }}
@@ -190,7 +218,7 @@ export function useInput(label, inputTypes) {
             </Tooltip>
         </>
     );
-    return [input, handle];
+    return [input, handle, inputType, niceName];
 }
 
 // A strict input can be used to run a function every time an output is published,
@@ -201,15 +229,26 @@ export function useStrictInput(label, inputTypes) {
     const listeners = useRef([]);
 
     useEffect(() => {
-        nodeStates[nodeId].backtraces[label] = {
+        nodeStates[nodeId].backtraces[label] = nodeStates[nodeId].backtraces[label] || {
             onNewInputAvailable(newValue) {
                 listeners.current.forEach((listener) => {
-                    listener(newValue);
+                    const { source, sourceHandle } = nodeStates[nodeId].backtraces[label] || {
+                        source: null,
+                        sourceHandle: null,
+                    };
+
+                    let inputType = null;
+                    let niceName = sourceHandle;
+                    if (source && sourceHandle) {
+                        inputType = nodeStates[source].outputs[sourceHandle].outputType;
+                    }
+                    listener(structuredClone(newValue), inputType, niceName);
                 });
             },
         };
+        nodeStates[nodeId].backtraces[label].inputTypes = inputTypes;
         setTimeout(updateNodeInternals, 15, nodeId);
-    }, [nodeId, label, updateNodeInternals]);
+    }, [nodeId, label, updateNodeInternals, inputTypes]);
 
     const subscribeChanges = useCallback((listener) => {
         listeners.current.push(listener);
@@ -218,6 +257,11 @@ export function useStrictInput(label, inputTypes) {
         };
     }, []);
 
+    function isValidConnection({ source, sourceHandle }) {
+        const oType = nodeStates[source].outputs[sourceHandle].outputType;
+        return inputTypes === "any" || inputTypes.indexOf(oType) > -1;
+    }
+
     const leftOffset = Object.keys(nodeStates[nodeId].backtraces).indexOf(label);
     const handle = (
         <>
@@ -225,6 +269,7 @@ export function useStrictInput(label, inputTypes) {
                 <Handle
                     type={"target"}
                     id={label}
+                    isValidConnection={isValidConnection}
                     style={{
                         left: 20 + 30 * leftOffset,
                     }}
@@ -233,6 +278,20 @@ export function useStrictInput(label, inputTypes) {
         </>
     );
     return [subscribeChanges, handle];
+}
+
+export function useSetting(settingName, defaultValue) {
+    const nodeId = useContext(NodeIdContext);
+    const [setting, setSetting] = useState(defaultValue);
+
+    useEffect(() => {
+        nodeStates[nodeId].settings[settingName] = nodeStates[nodeId].settings[settingName] || {
+            onUpdate: setSetting,
+            value: defaultValue,
+        };
+    }, [nodeId, defaultValue, settingName]);
+
+    return [setting, setSetting];
 }
 
 // The following code allows the Node ID to be implicitly captured by our hook above

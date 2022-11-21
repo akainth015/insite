@@ -1,11 +1,11 @@
-import { useInput, useOutput } from "../nodes";
-import { useEffect, useState } from "react";
+import { useInput } from "../nodes";
+import { useEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import * as d3 from "d3";
 import "./correlation.css";
 
 export default function Correlation() {
-    const [input, inputHndl] = useInput("input", ["object[]"]);
+    const [input, inputHndl] = useInput("input", ["table"]);
 
     useEffect(() => {
         if (input) {

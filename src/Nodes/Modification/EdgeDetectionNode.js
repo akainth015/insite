@@ -1,16 +1,21 @@
-import { useOutput, useStrictInput } from "../nodes";
+import { useInput, useOutput } from "../nodes";
 import { Paper, Typography } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function EdgeDetectionNode() {
-    const [registerChangeHandler, inputHandle] = useStrictInput("Input", ["any"]);
-    const [, setOutput, outputHandle] = useOutput("Edge Detected?", "boolean", false);
+    const [lastInput, setLastInput] = useState(null);
+    const [input, inputHandle] = useInput("Input", "any");
+    const [, setOutput, outputHandle] = useOutput("Changed Input", "number", 0);
 
     useEffect(() => {
-        return registerChangeHandler(() => {
-            setOutput(true);
-        });
-    }, [registerChangeHandler, setOutput]);
+        const old = lastInput;
+        const newValue = JSON.stringify(input);
+
+        if (old !== newValue) {
+            setOutput(input);
+        }
+        setLastInput(newValue);
+    }, [input, lastInput, setOutput]);
 
     return (
         <>
@@ -19,7 +24,7 @@ export default function EdgeDetectionNode() {
                     padding: 2,
                 }}
             >
-                <Typography>This node will notify downstream nodes whenever a new output is published.</Typography>
+                <Typography>Emit input only if it changes</Typography>
             </Paper>
             {inputHandle}
             {outputHandle}
