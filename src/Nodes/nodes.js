@@ -1,5 +1,6 @@
 import WebHookNode from "./Input/WebHookNode";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import AnalysisNode from "./Modification/AnalysisNode";
 import ClockNode from "./Input/ClockNode";
 import TextNode from "./Output/TextNode";
 import { Handle, Position, useUpdateNodeInternals } from "reactflow";
@@ -25,7 +26,6 @@ import LineChart from "./Output/LineChart";
 import WordCloudChart from "./Output/WordCloudChart";
 import { Tooltip } from "@mui/material";
 import AggregateNode from "./Modification/AggregateNode";
-import AnalysisNode from "./Modification/AnalysisNode";
 
 export const nodeIcons = {
     "CSV File": Code,

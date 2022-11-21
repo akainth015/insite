@@ -1,6 +1,6 @@
 import React from "react";
 import { useOutput } from "../nodes";
-import { Box, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 
 export default function TextInputNode() {
     const [output, setOutput, outputHndl] = useOutput("Output", "string", "");
@@ -24,23 +24,13 @@ export default function TextInputNode() {
 
     return (
         <>
-            <Box
-                sx={{
-                    width: 200,
-                    height: 120,
-                    backgroundColor: "white",
-                    padding: 2,
-                    borderRadius: 2,
-                    alignItems: "center",
-                    alignText: "center",
-                }}
-            >
+            <Paper sx={{ padding: 2 }}>
                 <Typography varient="h7">Text Input Node</Typography>
                 <form>
                     <input type="file" id="txtFile" name="txtFile" accept=".txt" onChange={onFileChange} />
                 </form>
-                <textarea id="Text" name="Text" value={output} onChange={onTextChange} />
-            </Box>
+                <textarea className={"nodrag nowheel"} id="Text" name="Text" value={output} onChange={onTextChange} />
+            </Paper>
             {outputHndl}
         </>
     );

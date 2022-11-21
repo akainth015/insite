@@ -4,6 +4,7 @@ import { useInput, useOutput } from "../nodes";
 import React, { useEffect, useState } from "react";
 import { ContentCopy } from "@mui/icons-material";
 import { Stack } from "@mui/system";
+import {backendUrl} from "../../backend";
 
 function AnalysisNode() {
     const [input, inputHndl] = useInput("input", ["string"]);
@@ -12,7 +13,7 @@ function AnalysisNode() {
 
     useEffect(() => {
         if (input !== null) {
-            fetch(`/${analysisType}/${input}`, {
+            fetch(`${backendUrl}/${analysisType}/${input}`, {
                 'method':'POST',
                  headers : {
                     'Content-Type':'application/json'
