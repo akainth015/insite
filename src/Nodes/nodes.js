@@ -54,18 +54,41 @@ export const outputNodeTypes = {
     Correlation: Correlation,
 };
 
-const nodeStates = {};
+let nodeStates = {};
+
+export function setNodesState(state) {
+    nodeStates = state;
+}
+
+export function setNodeValues(state) {
+    for (const source of Object.keys(state)) {
+        for (const sourceHandle of Object.keys(state[source])) {
+            nodeStates[source].outputs[sourceHandle].value = state[source][sourceHandle];
+        }
+    }
+}
 
 export const NodeIdContext = createContext(null);
 
 export function createNode(nodeId) {
-    nodeStates[nodeId] = {
+    nodeStates[nodeId] = nodeStates[nodeId] || {
         backtraces: {}, // the backtrace is a mapping from the input label to the output channel of the node that provides the input
         outputs: {}, // the output dictionary stores the latest output value on each channel
     };
     return () => {
-        nodeStates[nodeId] = undefined;
+        delete nodeStates[nodeId];
     };
+}
+
+export function getAllCurrentValues() {
+    const returnObject = {};
+    for (const source of Object.keys(nodeStates)) {
+        for (const sourceHandle of Object.keys(nodeStates[source].outputs)) {
+            returnObject[source] = {};
+            returnObject[source][sourceHandle] = nodeStates[source].outputs[sourceHandle].value;
+        }
+    }
+    return returnObject;
 }
 
 export function createConnection({ source, sourceHandle, target, targetHandle }) {

@@ -4,13 +4,28 @@ import "reactflow/dist/style.css";
 import { v4 as uuidv4 } from "uuid";
 
 import { Box } from "@mui/system";
-import { createConnection, createNode, inputNodeTypes, modificationNodeTypes, outputNodeTypes } from "./Nodes/nodes";
+import {
+    createConnection,
+    createNode,
+    inputNodeTypes,
+    modificationNodeTypes,
+    outputNodeTypes,
+    setNodesState,
+    setNodeValues,
+} from "./Nodes/nodes";
+
+import { useAuthUser } from "./Firebase/Auth";
+import Save from "./Components/Save";
+import { saveFlow, getFlow, getAllFlows } from "./Firebase/firestore";
 
 const proOptions = { hideAttribution: true };
 
-export default function Canvas() {
+export default function Canvas(props) {
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+    const [name, setName] = useState(props.name ? props.name : null);
+    const [id, setId] = useState(props.id ? props.id : uuidv4());
+    const auth = useAuthUser();
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
     const onConnect = useCallback(
@@ -86,6 +101,43 @@ export default function Canvas() {
         return Object.assign({}, inputNodeTypes, modificationNodeTypes, outputNodeTypes);
     }, []);
 
+    // Storage functions
+    const onSave = () => {
+        if (reactFlowInstance) {
+            let flow = reactFlowInstance.toObject();
+            for (const node of flow.nodes) {
+                delete node.data.delete;
+            }
+            for (const edge of flow.edges) {
+                delete edge.data.removeConnection;
+            }
+            saveFlow(auth, id, name, flow);
+        }
+    };
+
+    const onRestore = (restoreId, name) => {
+        const restoreFlow = async (restoreId, name) => {
+            const flow = await getFlow(auth, restoreId);
+
+            if (flow) {
+                for (const node of flow.nodes) {
+                    createNode(node.id);
+                }
+                setNodes(flow.nodes || []);
+                setTimeout(() => {
+                    setNodeValues(flow.values);
+                    for (const edge of flow.edges) {
+                        edge.data = { ...edge.data, removeConnection: createConnection(edge) };
+                    }
+                    setEdges(flow.edges || []);
+                }, 60);
+                setId(restoreId);
+                setName(name);
+            }
+        };
+        restoreFlow(restoreId, name);
+    };
+
     return (
         <Box sx={{ height: "100vh", width: "80vw", backgroundColor: "#282c34" }}>
             <ReactFlow
@@ -103,7 +155,9 @@ export default function Canvas() {
                 proOptions={proOptions}
             >
                 <Background />
-                <Controls />
+                <Controls>
+                    <Save onSave={onSave} onRestore={onRestore} setName={setName} name={name} />
+                </Controls>
                 <MiniMap />
             </ReactFlow>
         </Box>
