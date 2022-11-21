@@ -156,7 +156,7 @@ export default function Canvas(props) {
             >
                 <Background />
                 <Controls>
-                    <Save onSave={onSave} onRestore={onRestore} setName={setName} name={name} />
+                    {auth && <Save onSave={onSave} onRestore={onRestore} setName={setName} name={name} />}
                 </Controls>
                 <MiniMap />
             </ReactFlow>
