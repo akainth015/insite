@@ -16,8 +16,25 @@ export default function Canvas() {
     const onConnect = useCallback(
         (connection) => {
             console.debug(`Connection created`, connection);
-            createConnection(connection);
+
             setEdges((edges) => {
+                // Break any co-terminal connections
+                edges
+                    .filter(
+                        ({ target, targetHandle }) =>
+                            target === connection.target && targetHandle === connection.targetHandle
+                    )
+                    .forEach((edge) => edge.data.removeConnection());
+
+                // Remove any co-terminal connections
+                edges = edges.filter(
+                    ({ target, targetHandle }) =>
+                        target !== connection.target || targetHandle !== connection.targetHandle
+                );
+
+                connection.data = {
+                    removeConnection: createConnection(connection),
+                };
                 connection.markerEnd = {
                     type: MarkerType.ArrowClosed,
                     height: 20,
@@ -50,13 +67,16 @@ export default function Canvas() {
                 y: event.clientY,
             });
 
+            const nodeId = uuidv4();
             const newNode = {
-                id: uuidv4(),
+                id: nodeId,
                 type,
                 position,
-                data: {},
+                data: {
+                    delete: createNode(nodeId),
+                    type: type,
+                },
             };
-            createNode(newNode.id);
             setNodes((nodes) => nodes.concat(newNode));
         },
         [reactFlowInstance, setNodes]
@@ -73,6 +93,7 @@ export default function Canvas() {
                 edges={edges}
                 onEdgesChange={onEdgesChange}
                 onNodesChange={onNodesChange}
+                onEdgesDelete={(edges) => edges.forEach((e) => e.data.removeConnection())}
                 onConnect={onConnect}
                 onDrop={onDrop}
                 onDragOver={onDragOver}
