@@ -14,12 +14,15 @@ export default function AggregateNode() {
     }, [reset, setSum]);
 
     useEffect(() => {
-        return subscribeToInput((input) => {
+        const unsubscribe = subscribeToInput((input) => {
             if (!reset) {
-                setSum(sum + input);
+                setSum((sum) => sum + input);
             }
         });
-    }, [reset, setSum, subscribeToInput, sum]);
+        return () => {
+            unsubscribe();
+        };
+    }, [reset, setSum, subscribeToInput]);
 
     return (
         <>

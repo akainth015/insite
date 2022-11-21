@@ -78,7 +78,7 @@ function EnhancedTableHead({ onSelectAllClick, order, orderBy, numSelected, rowC
 
 export default function TableDisplayNode() {
     const [input, inputHndl] = useInput("input", ["table"]);
-    const [, setOutput, outputHndl] = useOutput("output", "object", input);
+    const [, setOutput, outputHndl] = useOutput("output", "table", input);
 
     const [order, setOrder] = useSetting("order", "asc");
     const [orderBy, setOrderBy] = useSetting("orderBy", null);
@@ -112,7 +112,7 @@ export default function TableDisplayNode() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.name);
+            const newSelected = rows.map((n) => n);
             setSelected(newSelected);
             return;
         }

@@ -17,7 +17,9 @@ export default function MissingValuesNode() {
                     let output;
                     switch (operation) {
                         case "drop":
-                            output = input.filter((row) => colsSelected.every((col) => row[col]));
+                            output = input.filter((row) =>
+                                colsSelected.every((col) => row[col] !== undefined && row[col] !== null)
+                            );
                             break;
                         case "avg":
                             output = input;

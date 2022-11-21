@@ -5,7 +5,7 @@ import ColumnSelect from "../../Components/ColumnSelect";
 
 export default function ConvertToNumberNode() {
     const [input, inputHandle, inputType] = useInput("input", ["table", "string", "boolean"]);
-    const [, setOutput, outputHandle] = useOutput("output", inputType, 0);
+    const [, setOutput, outputHandle] = useOutput("output", inputType === "table" ? "table" : "number", 0);
 
     const [columns, setColumns] = useSetting("columns", []);
 
