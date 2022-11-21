@@ -149,14 +149,14 @@ export function useOutput(label, outputType, initialOutput = null) {
         setTimeout(updateNodeInternals, 15, nodeId);
     }, [nodeId, label, initialOutput, updateNodeInternals, outputType]);
 
-    const setOutputAndPropagate = useCallback(
-        (newValue) => {
-            setOutput(newValue);
-            nodeStates[nodeId].outputs[label].value = newValue;
-            nodeStates[nodeId].outputs[label].listeners.forEach((listener) => listener(newValue));
-        },
-        [nodeId, label]
-    );
+    useEffect(() => {
+        nodeStates[nodeId].outputs[label].value = output;
+        nodeStates[nodeId].outputs[label].listeners.forEach((listener) => listener(output));
+    }, [label, nodeId, output]);
+
+    const setOutputAndPropagate = useCallback((newValue) => {
+        setOutput(newValue);
+    }, []);
 
     function isValidConnection({ target, targetHandle }) {
         const inputTypes = nodeStates[target].backtraces[targetHandle].inputTypes;
@@ -238,22 +238,27 @@ export function useStrictInput(label, inputTypes) {
     const nodeId = useContext(NodeIdContext);
     const updateNodeInternals = useUpdateNodeInternals();
     const listeners = useRef([]);
+    const [inputType, setInputType] = useState(null);
+    const [niceName, setNiceName] = useState(null);
 
     useEffect(() => {
         nodeStates[nodeId].backtraces[label] = nodeStates[nodeId].backtraces[label] || {
             onNewInputAvailable(newValue) {
-                listeners.current.forEach((listener) => {
-                    const { source, sourceHandle } = nodeStates[nodeId].backtraces[label] || {
-                        source: null,
-                        sourceHandle: null,
-                    };
+                const { source, sourceHandle } = nodeStates[nodeId].backtraces[label] || {
+                    source: null,
+                    sourceHandle: null,
+                };
 
-                    let inputType = null;
-                    let niceName = sourceHandle;
-                    if (source && sourceHandle) {
-                        inputType = nodeStates[source].outputs[sourceHandle].outputType;
-                    }
-                    listener(structuredClone(newValue), inputType, niceName);
+                let inputType = null;
+                let niceName = sourceHandle;
+                if (source && sourceHandle) {
+                    inputType = nodeStates[source].outputs[sourceHandle].outputType;
+                }
+                setInputType(inputType);
+                setNiceName(niceName);
+
+                listeners.current.forEach((listener) => {
+                    listener(structuredClone(newValue));
                 });
             },
         };
@@ -261,12 +266,24 @@ export function useStrictInput(label, inputTypes) {
         setTimeout(updateNodeInternals, 15, nodeId);
     }, [nodeId, label, updateNodeInternals, inputTypes]);
 
-    const subscribeChanges = useCallback((listener) => {
-        listeners.current.push(listener);
-        return () => {
-            listener.current = listeners.current.filter((it) => it !== listener);
-        };
-    }, []);
+    const subscribeChanges = useCallback(
+        (listener) => {
+            listeners.current.push(listener);
+
+            const { source, sourceHandle } = nodeStates[nodeId].backtraces[label] || {
+                source: null,
+                sourceHandle: null,
+            };
+            if (source && sourceHandle) {
+                listener(nodeStates[source].outputs[sourceHandle].value);
+            }
+
+            return () => {
+                listeners.current = listeners.current.filter((it) => it !== listener);
+            };
+        },
+        [label, nodeId]
+    );
 
     function isValidConnection({ source, sourceHandle }) {
         const oType = nodeStates[source].outputs[sourceHandle].outputType;
@@ -288,7 +305,7 @@ export function useStrictInput(label, inputTypes) {
             </Tooltip>
         </>
     );
-    return [subscribeChanges, handle];
+    return [subscribeChanges, handle, inputType, niceName];
 }
 
 export function useSetting(settingName, defaultValue) {

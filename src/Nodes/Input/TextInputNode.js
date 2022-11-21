@@ -1,18 +1,17 @@
-import React from "react"
-import { useState } from "react"
+import React from "react";
 import { useOutput } from "../nodes";
-import { Box, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material";
 
 export default function TextInputNode() {
-    const [output, setOutput, outputHndl] = useOutput("Output","string",null);
+    const [output, setOutput, outputHndl] = useOutput("Output", "string", "");
 
     const fileReader = new FileReader();
     const onFileChange = (e) => {
         const file = e.target.files[0];
-        fileReader.onload = function (e) {
+        fileReader.onload = function () {
             let txt = fileReader.result;
             txt = txt.replaceAll("\r\n", "\n");
-            txt = txt.replaceAll("\r","\n");
+            txt = txt.replaceAll("\r", "\n");
             setOutput(txt);
             console.log(outputHndl);
         };
@@ -21,7 +20,7 @@ export default function TextInputNode() {
 
     const onTextChange = (e) => {
         setOutput(e.target.value);
-    }
+    };
 
     return (
         <>
@@ -35,14 +34,14 @@ export default function TextInputNode() {
                     alignItems: "center",
                     alignText: "center",
                 }}
-                >
-                <Typography varient = "h7">Text Input Node</Typography>
+            >
+                <Typography varient="h7">Text Input Node</Typography>
                 <form>
-                    <input type="file" id="txtFile" name="txtFile" accept=".txt" onChange={onFileChange}/>
+                    <input type="file" id="txtFile" name="txtFile" accept=".txt" onChange={onFileChange} />
                 </form>
-                <textarea id="Text" name="Text" value={output} onChange={onTextChange}/>
+                <textarea id="Text" name="Text" value={output} onChange={onTextChange} />
             </Box>
             {outputHndl}
         </>
-    )
+    );
 }

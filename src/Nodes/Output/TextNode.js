@@ -2,7 +2,7 @@ import { Card, CardContent } from "@mui/material";
 import { useInput } from "../nodes";
 
 function TextNode() {
-    const [textInput, TIHandle] = useInput("Text Input", ["text", "boolean"]);
+    const [textInput, TIHandle] = useInput("Text Input", "any");
 
     const text = JSON.stringify(textInput);
 

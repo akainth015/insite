@@ -1,6 +1,14 @@
 import { Autocomplete, Checkbox, TextField } from "@mui/material";
 
-export default function ColumnSelect({ value, onChange, table, multiple = true, width = 350, sx }) {
+export default function ColumnSelect({
+    label = "Select Columns",
+    value,
+    onChange,
+    table,
+    multiple = true,
+    width = 350,
+    sx,
+}) {
     const tableColumns = table && table.length > 0 ? table.columns || Object.keys(table[0]) : [];
 
     return (
@@ -17,7 +25,7 @@ export default function ColumnSelect({ value, onChange, table, multiple = true, 
             options={tableColumns}
             disableCloseOnSelect
             getOptionLabel={(option) => option}
-            renderInput={(params) => <TextField {...params} label="Select Columns" placeholder="Columns" />}
+            renderInput={(params) => <TextField {...params} label={label} placeholder="Columns" />}
             renderOption={(props, option, { selected }) => {
                 return (
                     <li {...props}>
