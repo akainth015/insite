@@ -16,12 +16,15 @@ import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
 import Normalization from "./Modification/Normalization";
 import { ButtonNode } from "./Input/ButtonNode";
+import Concatenation from "./Modification/Concatenation";
+import { Tooltip } from "@mui/material";
 
 export const nodeIcons = {
     "Web Hook": WebhookIcon,
 };
 
 export const modificationNodeTypes = {
+    Concatenation: Concatenation,
     "Filter Node": FilterNode,
     "5ST": FiveSTimer,
     "OneHot Encoding": OneHot,
@@ -54,6 +57,9 @@ export function createNode(nodeId) {
         backtraces: {}, // the backtrace is a mapping from the input label to the output channel of the node that provides the input
         outputs: {}, // the output dictionary stores the latest output value on each channel
     };
+    return () => {
+        nodeStates[nodeId] = undefined;
+    };
 }
 
 export function createConnection({ source, sourceHandle, target, targetHandle }) {
@@ -67,6 +73,25 @@ export function createConnection({ source, sourceHandle, target, targetHandle })
     nodeStates[source].outputs[sourceHandle].listeners.push(
         nodeStates[target].backtraces[targetHandle].onNewInputAvailable
     );
+
+    // Provide a function that can be called to undo this connection
+    return () => {
+        // If the target node still exists, publish an empty value to it and disconnect the nodes
+        if (nodeStates[target]) {
+            nodeStates[target].backtraces[targetHandle].source = null;
+            nodeStates[target].backtraces[targetHandle].sourceHandle = null;
+            nodeStates[target].backtraces[targetHandle].onNewInputAvailable(null);
+        }
+
+        // If the source node exists, tell it to stop notifying the target of new values
+        if (nodeStates[source]) {
+            nodeStates[source].outputs[sourceHandle].listeners = nodeStates[source].outputs[
+                sourceHandle
+            ].listeners.filter(
+                (listener) => listener !== nodeStates[target].backtraces[targetHandle].onNewInputAvailable
+            );
+        }
+    };
 }
 
 export function useOutput(label, outputType, initialOutput = null) {
@@ -89,7 +114,22 @@ export function useOutput(label, outputType, initialOutput = null) {
         [nodeId, label]
     );
 
-    return [output, setOutputAndPropagate, <Handle type={"source"} id={label} position={Position.Bottom} />];
+    const rightOffset = Object.keys(nodeStates[nodeId].outputs).indexOf(label);
+    const handle = (
+        <>
+            <Tooltip title={label}>
+                <Handle
+                    type={"source"}
+                    id={label}
+                    position={Position.Bottom}
+                    style={{
+                        left: `calc(100% - 20px - ${30 * rightOffset}px`,
+                    }}
+                />
+            </Tooltip>
+        </>
+    );
+    return [output, setOutputAndPropagate, handle];
 }
 
 export function useInput(label, inputTypes) {
@@ -102,7 +142,21 @@ export function useInput(label, inputTypes) {
         };
     }, [nodeId, label]);
 
-    return [input, <Handle type={"target"} id={label} />];
+    const leftOffset = Object.keys(nodeStates[nodeId].backtraces).indexOf(label);
+    const handle = (
+        <>
+            <Tooltip title={label}>
+                <Handle
+                    type={"target"}
+                    id={label}
+                    style={{
+                        left: 20 + 30 * leftOffset,
+                    }}
+                />
+            </Tooltip>
+        </>
+    );
+    return [input, handle];
 }
 
 // The following code allows the Node ID to be implicitly captured by our hook above
