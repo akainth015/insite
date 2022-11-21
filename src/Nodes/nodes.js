@@ -16,7 +16,6 @@ import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
 import Normalization from "./Modification/Normalization";
 import { ButtonNode } from "./Input/ButtonNode";
-import Pie_Chart from "./Output/PieChart";
 import Stock_Ticker from "./Output/StockTicker"; 
 
 export const nodeIcons = {
@@ -45,6 +44,7 @@ export const outputNodeTypes = {
     Clock: ClockNode,
     "Text Display": TextNode,
     Correlation: Correlation,
+    "Stock Ticker": Stock_Ticker
 };
 
 const nodeStates = {};

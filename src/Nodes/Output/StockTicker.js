@@ -1,24 +1,31 @@
 import React from "react";
 import Chart from "chart.js/auto";
 import {Card, CardContent} from "@mui/material";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import { useOutput, useInput } from "../nodes";
 import { Box, Typography} from "@mui/material";
 import { useSocketIoChannel } from "../../backend";
+import { FilePresent } from "@mui/icons-material";
 
 
 export default function Stock_Ticker(){
-    const [input, inputHandl] = useInput("piechart", "object[]");
-    const [data, setOutput, outputHandle] = useOutput("Output", "object[], object", null);
+    const [companyName, setCompanyName] = useState("AAPL");
+    const [price, setStockPriceOutput] = useState(0);
+    const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_market_price");
 
-    const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("stock-price");
+    const intervalID = null
+    const handleSubmit = () => {
+        clearInterval(intervalID);
+        intervalID = setInterval(emitStockPriceSubscription(companyName), 1000);
+    }
+
 
     useEffect(() => {
-        return registerToUpdates(({price}) => setStockPriceOutput(price));
-    });
-    
+        return registerToUpdates((data) => {
+            setStockPriceOutput(data);
+        });
+    }, [registerToUpdates]);
 
-    
 
     return(
         <Box
@@ -30,16 +37,22 @@ export default function Stock_Ticker(){
             borderRadius: 2,
         }}
         >
-        <Typography variant="h7"> Stock Ticker</Typography>
+        <form onSubmit={handleSubmit}>
+        <label>
+            Company Ticker:
+            <input
+            type="text"
+            value={companyName}
+            onChange={e => setCompanyName(e.target.value)}
+            />
+        </label>
+        <input type="submit" value="Submit" />
+        </form>
 
-            {inputHandl}
-            <CardContent>
-            </CardContent>
-            {outputHandle}
-            
-
-
+        {price}
+        
         </Box>
+        
         
     )
 
