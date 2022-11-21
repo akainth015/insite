@@ -1,5 +1,6 @@
 import WebHookNode from "./Input/WebHookNode";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import AnalysisNode from "./Modification/AnalysisNode";
 import ClockNode from "./Input/ClockNode";
 import TextNode from "./Output/TextNode";
 import { Handle, Position, useUpdateNodeInternals } from "reactflow";
@@ -33,6 +34,7 @@ export const nodeIcons = {
 };
 
 export const modificationNodeTypes = {
+    "Natural Language Analysis": AnalysisNode,
     "Merge Values": MergeNode,
     "Change Detector": EdgeDetectionNode,
     Aggregator: AggregateNode,
