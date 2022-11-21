@@ -16,7 +16,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<SignUp />} />
                     <Route
-                        path="/trialCanvas"
+                        path="/canvas"
                         element={
                             <>
                                 <CssBaseline />
