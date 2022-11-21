@@ -1,8 +1,8 @@
 import WebHookNode from "./Input/WebHookNode";
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import ClockNode from "./Input/ClockNode";
 import TextNode from "./Output/TextNode";
-import { Handle, Position } from "reactflow";
+import { Handle, Position, useUpdateNodeInternals } from "reactflow";
 import FiveSTimer from "./Modification/FiveSTimer";
 import CsvNode from "./Input/CsvNode";
 import TableDisplayNode from "./Output/TableDisplayNode";
@@ -18,6 +18,8 @@ import { ButtonNode } from "./Input/ButtonNode";
 import { Code, DataObject, Webhook } from "@mui/icons-material";
 import Concatenation from "./Modification/Concatenation";
 import { Tooltip } from "@mui/material";
+import EdgeDetectionNode from "./Modification/EdgeDetectionNode";
+import IntegratorNode from "./Modification/IntegratorNode";
 
 export const nodeIcons = {
     "CSV File": Code,
@@ -27,6 +29,8 @@ export const nodeIcons = {
 
 export const modificationNodeTypes = {
     Concatenation: Concatenation,
+    "Change Detector": EdgeDetectionNode,
+    Integrator: IntegratorNode,
     "Filter Node": FilterNode,
     "5ST": FiveSTimer,
     "OneHot Encoding": OneHot,
@@ -98,6 +102,7 @@ export function createConnection({ source, sourceHandle, target, targetHandle })
 
 export function useOutput(label, outputType, initialOutput = null) {
     const nodeId = useContext(NodeIdContext);
+    const updateNodeInternals = useUpdateNodeInternals();
     const [output, setOutput] = useState(initialOutput);
 
     useEffect(() => {
@@ -105,7 +110,8 @@ export function useOutput(label, outputType, initialOutput = null) {
             listeners: [],
             value: initialOutput,
         };
-    }, [nodeId, label, initialOutput]);
+        setTimeout(updateNodeInternals, 15, nodeId);
+    }, [nodeId, label, initialOutput, updateNodeInternals]);
 
     const setOutputAndPropagate = useCallback(
         (newValue) => {
@@ -136,13 +142,16 @@ export function useOutput(label, outputType, initialOutput = null) {
 
 export function useInput(label, inputTypes) {
     const nodeId = useContext(NodeIdContext);
+    const updateNodeInternals = useUpdateNodeInternals();
     const [input, setInput] = useState(null);
 
     useEffect(() => {
         nodeStates[nodeId].backtraces[label] = {
             onNewInputAvailable: setInput,
         };
-    }, [nodeId, label]);
+
+        setTimeout(updateNodeInternals, 30, nodeId);
+    }, [nodeId, label, updateNodeInternals]);
 
     const leftOffset = Object.keys(nodeStates[nodeId].backtraces).indexOf(label);
     const handle = (
@@ -161,12 +170,54 @@ export function useInput(label, inputTypes) {
     return [input, handle];
 }
 
+// A strict input can be used to run a function every time an output is published,
+// even when the value is not changed.
+export function useStrictInput(label, inputTypes) {
+    const nodeId = useContext(NodeIdContext);
+    const updateNodeInternals = useUpdateNodeInternals();
+    const listeners = useRef([]);
+
+    useEffect(() => {
+        nodeStates[nodeId].backtraces[label] = {
+            onNewInputAvailable(newValue) {
+                listeners.current.forEach((listener) => {
+                    listener(newValue);
+                });
+            },
+        };
+        setTimeout(updateNodeInternals, 15, nodeId);
+    }, [nodeId, label, updateNodeInternals]);
+
+    const subscribeChanges = useCallback((listener) => {
+        listeners.current.push(listener);
+        return () => {
+            listener.current = listeners.current.filter((it) => it !== listener);
+        };
+    }, []);
+
+    const leftOffset = Object.keys(nodeStates[nodeId].backtraces).indexOf(label);
+    const handle = (
+        <>
+            <Tooltip title={label}>
+                <Handle
+                    type={"target"}
+                    id={label}
+                    style={{
+                        left: 20 + 30 * leftOffset,
+                    }}
+                />
+            </Tooltip>
+        </>
+    );
+    return [subscribeChanges, handle];
+}
+
 // The following code allows the Node ID to be implicitly captured by our hook above
 // without needing to be explicitly threaded through the various hooks and functions
 // that get called
 
 function NodeWrapper(InnerComponent) {
-    return function (props) {
+    return function Node(props) {
         return (
             <NodeIdContext.Provider value={props.id}>
                 <InnerComponent {...props} />
