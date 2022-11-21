@@ -4,10 +4,9 @@ import ClockNode from "./Input/ClockNode";
 import TextNode from "./Output/TextNode";
 import { Handle, Position } from "reactflow";
 import FiveSTimer from "./Modification/FiveSTimer";
-import CSVNode from "./Input/CSVNode";
+import CsvNode from "./Input/CsvNode";
 import TableDisplayNode from "./Output/TableDisplayNode";
 import DropNode from "./Modification/DropNode";
-import WebhookIcon from "@mui/icons-material/Webhook";
 import OneHot from "./Modification/OneHot";
 import ConvertFloat from "./Modification/ConvertFloat";
 import FillMissing from "./Modification/MissingValue";
@@ -16,11 +15,14 @@ import FilterNode from "./Modification/Filter";
 import JsonNode from "./Input/JsonNode";
 import Normalization from "./Modification/Normalization";
 import { ButtonNode } from "./Input/ButtonNode";
+import { Code, DataObject, Webhook } from "@mui/icons-material";
 import Concatenation from "./Modification/Concatenation";
 import { Tooltip } from "@mui/material";
 
 export const nodeIcons = {
-    "Web Hook": WebhookIcon,
+    "CSV File": Code,
+    "JSON File": DataObject,
+    "Web Hook": Webhook,
 };
 
 export const modificationNodeTypes = {
@@ -37,7 +39,7 @@ export const modificationNodeTypes = {
 export const inputNodeTypes = {
     Button: ButtonNode,
     "Web Hook": WebHookNode,
-    "CSV File": CSVNode,
+    "CSV File": CsvNode,
     "JSON File": JsonNode,
 };
 
