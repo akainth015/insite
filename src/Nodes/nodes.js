@@ -75,6 +75,7 @@ export const outputNodeTypes = {
     "Line Chart Display": LineChart,
     "Word Cloud Display": WordCloudChart,
     "Pie Chart": PieChart,
+    "Stock Ticker": Stock_Ticker
 };
 
 let nodeStates = {};
