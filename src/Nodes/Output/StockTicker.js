@@ -1,17 +1,14 @@
 import React from "react";
-import Chart from "chart.js/auto";
-import {Card, CardContent} from "@mui/material";
 import {useEffect, useState} from "react";
 import { useOutput, useInput } from "../nodes";
-import { Box, Typography} from "@mui/material";
+import { Box} from "@mui/material";
 import { useSocketIoChannel } from "../../backend";
-import { FilePresent } from "@mui/icons-material";
 
 
 export default function Stock_Ticker(){
     const [companyName, setCompanyName] = useState("Input desired Company Ticker");
-    const [price, setStockPriceOutput] = useState(0);
     const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_market_price");
+    const [price, setStockPriceOutput, outputHndl] = useOutput("Output", "string", "Input desired Company Ticker");
 
     
 
@@ -52,8 +49,7 @@ export default function Stock_Ticker(){
         </label>
         <input type="submit" value="Submit" />
         </form>
-
-        {price}
+        {outputHndl}
         
         </Box>
         
