@@ -8,7 +8,7 @@ import { useSocketIoChannel } from "../../backend";
 export default function Stock_History(){
     const [companyName, setCompanyName] = useState("Input desired Company Ticker");
     const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_historical_prices");
-    const [historical_prices, setStockPriceOutput, outputHndl] = useOutput("Output", "table", []);
+    const [historical_prices, setStockPriceOutput, outputHndl] = useOutput("Output", "table");
 
 
     const handleSubmit = () => {
