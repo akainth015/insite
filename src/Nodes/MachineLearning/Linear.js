@@ -16,7 +16,7 @@ const MenuProps = {
 };
 
 export default function LinearNode() {
-    const [input, inputHndl] = useInput("input", ["object[]"]);
+    const [input, inputHndl] = useInput("input", ["table"]);
     const [output, setOutput, outputHndl] = useOutput("output", "object[]", input);
     const [categories, setCategories] = useState([]);
     const [x_train, setX] = useState([]);
