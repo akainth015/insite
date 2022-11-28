@@ -31,6 +31,7 @@ import JQNode from "./Modification/JQNode.js";
 import StringArrayBuilderNode from "./Modification/StringArrayBuilderNode";
 import NumberArrayBuilderNode from "./Modification/NumberArrayBuilderNode";
 import BooleanArrayBuilderNode from "./Modification/BooleanArrayBuilderNode";
+import Stock_History from "./Output/StockHistory";
 
 export const nodeIcons = {
     "CSV File": Code,
@@ -75,7 +76,8 @@ export const outputNodeTypes = {
     "Line Chart Display": LineChart,
     "Word Cloud Display": WordCloudChart,
     "Pie Chart": PieChart,
-    "Stock Ticker": Stock_Ticker
+    "Stock Ticker": Stock_Ticker,
+    "Stock Historical Output": Stock_History
 };
 
 let nodeStates = {};

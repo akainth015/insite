@@ -5,11 +5,11 @@ import { Box} from "@mui/material";
 import { useSocketIoChannel } from "../../backend";
 
 
-export default function Stock_Ticker(){
+export default function Stock_History(){
     const [companyName, setCompanyName] = useState("Input desired Company Ticker");
-    const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_market_price");
-    const [price, setStockPriceOutput, outputHndl] = useOutput("Output", "table", "Input desired Company Ticker");
-    var intervalID = null; 
+    const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_historical_prices");
+    const [historical_prices, setStockPriceOutput, outputHndl] = useOutput("Output", "table", []);
+
 
     const handleSubmit = () => {
         emitStockPriceSubscription(companyName);
@@ -17,10 +17,18 @@ export default function Stock_Ticker(){
 
     useEffect(() => {
         return registerToUpdates((data) => {
-            var new_price = companyName + ' current market price: ' +  + data + " USD"; 
-            setStockPriceOutput(new_price);
+            convertCSV(data)
+            console.log(typeof data);
+            setStockPriceOutput(data);
         });
     }, [registerToUpdates, companyName]);
+
+
+    function convertCSV(hashMap){
+        Object.keys(hashMap).map(function(k){
+            return hashMap[k];
+        }).join(',');
+    }
 
 
     return(
@@ -50,8 +58,6 @@ export default function Stock_Ticker(){
         
         </Box>
         
-        
     )
-
 }
 

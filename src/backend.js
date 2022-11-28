@@ -11,6 +11,7 @@ export var socket = io(backendUrl, {
       credentials: true,
     },
   });
+  
 export function useSocketIoChannel(channelName) {
     const nodeId = useContext(NodeIdContext);
 
