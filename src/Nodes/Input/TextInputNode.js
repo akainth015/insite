@@ -1,6 +1,6 @@
 import React from "react";
 import { useOutput } from "../nodes";
-import { Box, Paper, Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 
 export default function TextInputNode() {
     const [output, setOutput, outputHndl] = useOutput("Output", "string", "");

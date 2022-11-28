@@ -1,6 +1,6 @@
 import { database } from "../firebase";
 import { doc, updateDoc, deleteField, setDoc, collection, getDocFromServer, deleteDoc } from "firebase/firestore";
-import { getAllCurrentValues, getNodesState } from "../Nodes/nodes";
+import { getAllCurrentValues } from "../Nodes/nodes";
 
 export async function getAllFlows(auth) {
     const userId = auth.uid;
