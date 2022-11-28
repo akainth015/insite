@@ -70,7 +70,7 @@ export default function Save(props) {
                 position: "absolute",
                 bottom: 0,
                 left: 0,
-                ml: "2vw",
+                ml: "4vw",
             }}
         >
             <Dialog width="100vw" open={open} onClose={handleClose}>
@@ -158,8 +158,8 @@ export default function Save(props) {
                         onClick={() => {
                             props.setName(text);
                             setTimeout(() => {
-                                props.onSave();
-                            }, 60);
+                                props.onSave(text);
+                            }, 30);
                             handleRenameClose();
                         }}
                     >

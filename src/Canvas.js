@@ -102,7 +102,7 @@ export default function Canvas(props) {
     }, []);
 
     // Storage functions
-    const onSave = () => {
+    const onSave = (param) => {
         if (reactFlowInstance) {
             let flow = reactFlowInstance.toObject();
             for (const node of flow.nodes) {
@@ -111,7 +111,11 @@ export default function Canvas(props) {
             for (const edge of flow.edges) {
                 delete edge.data.removeConnection;
             }
-            saveFlow(auth, id, name, flow);
+            if (param) {
+                saveFlow(auth, id, param, flow);
+            } else {
+                saveFlow(auth, id, name, flow);
+            }
         }
     };
 
