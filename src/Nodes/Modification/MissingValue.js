@@ -1,84 +1,107 @@
-import { useInput, useOutput } from "../nodes";
+import { useInput, useOutput, useSetting } from "../nodes";
+import { FormControl, InputLabel, MenuItem, Paper, Select, Typography } from "@mui/material";
+import ColumnSelect from "../../Components/ColumnSelect";
 import { useEffect } from "react";
-import { Stack, Typography, Box } from "@mui/material";
 
-export default function FillMissing() {
-    const [input, inputHndl] = useInput("input", ["object[]"]);
-    const [output, setOutput, outputHndl] = useOutput("output", "object[]", input);
+export default function MissingValuesNode() {
+    const [input, inputHandle, inputType] = useInput("input", ["table", "number"]);
+    const [, setOutput, outputHandle] = useOutput("output", "table", input);
+
+    const [colsSelected, setColsSelected] = useSetting("column", []);
+    const [operation, setOperation] = useSetting("operation", "drop");
 
     useEffect(() => {
-        if (input) {
-            const newData = processData();
-            setOutput(newData);
-        }
-    }, [input]);
-
-    const processData = () => {
-        //Create a copy of the input
-        let newObj = structuredClone(input);
-        const categories = categoriesToCheck(newObj);
-
-        for (let i = 0; i < categories.length; i++) {
-            let total = 0;
-            let count = 0;
-            for (let j = 0; j < newObj.length; j++) {
-                if (
-                    newObj[j][categories[i]] === null ||
-                    newObj[j][categories[i]] === undefined ||
-                    isNaN(newObj[j][categories[i]])
-                ) {
-                    continue;
+        switch (inputType) {
+            case "table":
+                if (input) {
+                    let output;
+                    switch (operation) {
+                        case "drop":
+                            output = input.filter((row) =>
+                                colsSelected.every((col) => row[col] !== undefined && row[col] !== null)
+                            );
+                            break;
+                        case "avg":
+                            output = input;
+                            colsSelected.forEach((colSelect) => {
+                                const avg = input.reduce((avg, row) => avg + row[colSelect] / input.length, 0);
+                                output = output.map((row) => {
+                                    if (!row[colSelect] || isNaN(row[colSelect])) {
+                                        row[colSelect] = avg;
+                                    }
+                                    return row;
+                                });
+                            });
+                            break;
+                        case "zero":
+                            output = input;
+                            colsSelected.forEach((colSelect) => {
+                                output = input.map((row) => {
+                                    if (!row[colSelect] || isNaN(row[colSelect])) {
+                                        row[colSelect] = 0;
+                                    }
+                                    return row;
+                                });
+                            });
+                            break;
+                        default:
+                            console.error("WTF is happening");
+                            break;
+                    }
+                    output.columns = input.columns;
+                    setOutput(output);
                 }
-                total += newObj[j][categories[i]];
-                count++;
-            }
-            const average = total / count;
-
-            for (let j = 0; j < newObj.length; j++) {
-                if (
-                    newObj[j][categories[i]] === null ||
-                    newObj[j][categories[i]] === undefined ||
-                    isNaN(newObj[j][categories[i]])
-                ) {
-                    newObj[j][categories[i]] = average;
+                break;
+            default:
+                if (!input || isNaN(input)) {
+                    switch (operation) {
+                        case "zero":
+                            setOutput(0);
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            }
+                break;
         }
-        // Converts all values to ints when possible
-
-        return newObj;
-    };
-
-    const categoriesToCheck = (data) => {
-        let categories = [];
-        const arr = Object.keys(data[0]);
-        for (let i = 0; i < arr.length; i++) {
-            if (typeof data[0][arr[i]] === "number") {
-                categories.push(arr[i]);
-            }
-        }
-        return categories;
-    };
+    }, [colsSelected, operation, input, setOutput, inputType]);
 
     return (
         <>
-            {inputHndl}
-            <Box
+            {inputHandle}
+            <Paper
                 sx={{
-                    width: 190,
-                    height: 80,
-                    backgroundColor: "white",
                     padding: 2,
-                    borderRadius: 2,
-                    alignItems: "center",
-                    alignText: "center",
                 }}
             >
-                <Stack direction="column">
-                    <Typography variant="h7">Fill Missing Values Node</Typography>
-                </Stack>
-            </Box>
-            {outputHndl}
+                <Typography mb={1} align="center">
+                    Handle Missing Values
+                </Typography>
+                {inputType === "table" ? (
+                    <ColumnSelect
+                        sx={{ mb: 2 }}
+                        multiple={true}
+                        value={colsSelected}
+                        onChange={setColsSelected}
+                        table={input}
+                    />
+                ) : null}
+
+                <FormControl fullWidth className={"nodrag nowheel"}>
+                    <InputLabel id={"operation"}>Operation</InputLabel>
+                    <Select
+                        label={"Operation"}
+                        labelId={"operation"}
+                        onChange={(e) => setOperation(e.target.value)}
+                        value={operation}
+                    >
+                        <MenuItem value={"drop"}>Drop Missing Values</MenuItem>
+                        {inputType === "table" ? <MenuItem value={"avg"}>Replace with Average</MenuItem> : null}
+                        <MenuItem value={"zero"}>Replace with Zero</MenuItem>
+                    </Select>
+                </FormControl>
+            </Paper>
+            {outputHandle}
         </>
     );
 }
