@@ -6,14 +6,13 @@ import { useInput, useOutput } from "../nodes";
 const empty_arr = [];
 
 export default function TextTokenization() {
-    var [input, inputHndl] = useInput("input","string");
-    const [output, setOutput, outputHndl] = useOutput("output","string[]",empty_arr);
+    var [input, inputHndl] = useInput("input", "string");
+    const [, setOutput, outputHndl] = useOutput("output", "string[]", empty_arr);
 
     useEffect(() => {
-
-        if(input) {
+        if (input) {
             // Only allow for string type inputs to tokenize, else do log error
-            if(typeof(input) === 'string') { 
+            if (typeof input === "string") {
                 const newData = processData(input);
                 setOutput(newData);
                 console.log(newData);
@@ -21,18 +20,17 @@ export default function TextTokenization() {
                 console.log("TextTokenizationError: Input must be type string.");
             }
         }
-        
-    }, [input]);
+    }, [input, setOutput]);
 
     // Regex Tokenize Input Data
     const processData = (input) => {
-        let split_input = input.split(/[ ,!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?\n]+/);
+        let split_input = input.split(/[ ,!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?\n]+/);
         // Check if the last character is a newline ( regex wont capture it from the textarea )
-        if(split_input[split_input.length-1] === "") {
+        if (split_input[split_input.length - 1] === "") {
             split_input.splice(-1);
         }
         return split_input;
-    }
+    };
 
     return (
         <>
@@ -41,12 +39,13 @@ export default function TextTokenization() {
                 sx={{
                     width: 190,
                     height: 80,
-                    backgroundColor:"white",
+                    backgroundColor: "white",
                     padding: 2,
                     borderRadius: 2,
-                    alignItems:"center",
-                    alignText:"center",
-                }}>
+                    alignItems: "center",
+                    alignText: "center",
+                }}
+            >
                 <Stack direction="column">
                     <Typography variant="h7">Tokenize Text Input</Typography>
                 </Stack>
@@ -54,5 +53,4 @@ export default function TextTokenization() {
             {outputHndl}
         </>
     );
-
 }
