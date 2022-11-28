@@ -1,54 +1,57 @@
-import { useEffect, useInput, useState } from "react";
-import { Chart } from "chart.js"
-import { Box, Typography } from "@mui/material"
-
+import { useEffect, useState } from "react";
+import { useInput } from "../nodes";
+import { Chart } from "chart.js";
+import { Box, Typography } from "@mui/material";
 
 export default function WordCloudChart() {
-
     // Place keys into bins and scale by recurrence
     const process_data = (input) => {
         const bins = {};
-        for(const i of input) {
+        for (const i of input) {
             bins[Object.values(i)] = bins[Object.values(i)] ? bins[Object.values(i)] + 1 : 1;
         }
 
         return bins;
-    }
+    };
 
-    const [input, inputHndl] = useInput("object","object[]");
+    const [input, inputHndl] = useInput("object", "object[]");
     const [data, setData] = useState({
-        datasets: [{
-            data: [],
-        }],
+        datasets: [
+            {
+                data: [],
+            },
+        ],
     });
 
     const options = {
-        type: 'wordCloud',
+        type: "wordCloud",
         data: data,
         options: {},
-    }
+    };
 
-     useEffect(() => {
-        if(input) {
+    useEffect(() => {
+        if (input) {
             const input_data = process_data(input);
             init_cloud(input_data);
         }
-     }, [input]);
+    }, [input]);
 
-     function init_cloud(input) {
+    function init_cloud(input) {
         setData({
             labels: input.map((d) => d.key),
-            datasets: [{
-                data: input.map((d)=>10+d.value*10),
-            }]
-        })
-     };
+            datasets: [
+                {
+                    data: input.map((d) => 10 + d.value * 10),
+                },
+            ],
+        });
+    }
 
-     return (
+    return (
         <>
             <Box
-                display = "flex"
-                sx = {{
+                display="flex"
+                sx={{
                     backgroundcolor: "white",
                     padding: 2,
                     borderRadius: 2,
@@ -57,9 +60,9 @@ export default function WordCloudChart() {
                     minHeight: 300,
                 }}
             >
-                <Typography varient = "h7">Word Cloud Node</Typography>
+                <Typography varient="h7">Word Cloud Node</Typography>
                 <wordCloud data={data} options={options}></wordCloud>
             </Box>
         </>
-     );
+    );
 }
