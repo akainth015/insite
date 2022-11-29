@@ -23,7 +23,7 @@ import TextTokenization from "./Modification/TextTokenization";
 import TextInputNode from "./Input/TextInputNode";
 import HistogramChart from "./Output/HistogramChart";
 import LineChart from "./Output/LineChart";
-import WordCloudChart from "./Output/WordCloudChart";
+import WordCloudChart from "./Output/WordCloudNode";
 import { Tooltip } from "@mui/material";
 import AggregateNode from "./Modification/AggregateNode";
 
