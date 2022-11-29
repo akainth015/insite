@@ -65,6 +65,8 @@ export const inputNodeTypes = {
     "CSV File": CsvNode,
     "JSON File": JsonNode,
     "Text File": TextInputNode,
+    "Stock Ticker": Stock_Ticker,
+    "Stock Historical Output": Stock_History
 };
 
 export const outputNodeTypes = {
@@ -76,8 +78,6 @@ export const outputNodeTypes = {
     "Line Chart Display": LineChart,
     "Word Cloud Display": WordCloudChart,
     "Pie Chart": PieChart,
-    "Stock Ticker": Stock_Ticker,
-    "Stock Historical Output": Stock_History
 };
 
 let nodeStates = {};
