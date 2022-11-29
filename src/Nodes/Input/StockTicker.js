@@ -9,6 +9,7 @@ export default function StockTicker() {
     const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_market_price");
     const [price, setStockPriceOutput, outputHndl] = useOutput("Output", "number", "Input desired Company Ticker");
 
+
     const handleSubmit = () => {
         emitStockPriceSubscription(companyName);
     };
