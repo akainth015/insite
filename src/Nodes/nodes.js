@@ -26,6 +26,7 @@ import LineChart from "./Output/LineChart";
 import WordCloudChart from "./Output/WordCloudNode";
 import { Tooltip } from "@mui/material";
 import AggregateNode from "./Modification/AggregateNode";
+import PieChart from "./Output/PieChart";
 
 export const nodeIcons = {
     "CSV File": Code,
@@ -65,6 +66,7 @@ export const outputNodeTypes = {
     "Histogram Chart Display": HistogramChart,
     "Line Chart Display": LineChart,
     "World Cloud Display": WordCloudChart,
+    "Pie Chart": PieChart,
 };
 
 let nodeStates = {};
