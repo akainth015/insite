@@ -10,7 +10,6 @@ export default function Stock_History(){
     const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_historical_prices");
     const [historical_prices, setStockPriceOutput, outputHndl] = useOutput("Output", "table");
 
-
     const handleSubmit = () => {
         emitStockPriceSubscription(companyName);
     }
@@ -28,7 +27,6 @@ export default function Stock_History(){
             return hashMap[k];
         }).join(',');
     }
-
 
     return(
         <Box
