@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useInput, useSetting } from "../nodes";
+import { useInput, useOutput, useSetting } from "../nodes";
 import Chart from "chart.js/auto";
 import "chartjs-adapter-date-fns";
 
@@ -8,12 +8,14 @@ import ColumnSelect from "../../Components/ColumnSelect";
 
 export default function Histogram() {
     const [input, inputHandle, inputType, niceName] = useInput("Input", ["table", "string[]", "number[]"]);
+    const [output, setOutput, outputHndl] = useOutput("output", "bins", {});
 
     const [column, setColumn] = useSetting("xAxis", null);
 
     const canvasRef = useRef(null);
     const chart = useRef(null);
 
+    // Create the Histogram Chart if it does not yet exist
     useEffect(() => {
         if (inputType) {
             // noinspection JSValidateTypes
@@ -43,6 +45,10 @@ export default function Histogram() {
         }
     }, [column, inputType, niceName]);
 
+    /*  If the Histogram Chart has already been instantiated and Input is valid
+     *   Scan input into bins accordingly and add to Chart
+     *   Set the Output to be Bins ( for any node that might need binned data )
+     */
     useEffect(() => {
         if (input && (inputType !== "table" || column) && chart.current) {
             const bins = {};
@@ -53,6 +59,7 @@ export default function Histogram() {
             chart.current.data.datasets[0].data = Object.values(bins);
             chart.current.data.labels = Object.keys(bins);
             chart.current.update();
+            setOutput(bins);
         }
     }, [input, column, inputType]);
 
@@ -70,6 +77,7 @@ export default function Histogram() {
                 ) : null}
                 <canvas className={"nodrag nowheel"} ref={canvasRef} />
             </Paper>
+            {outputHndl}
         </>
     );
 }
