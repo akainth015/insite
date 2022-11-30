@@ -333,6 +333,10 @@ export function useSetting(settingName, defaultValue) {
         };
     }, [nodeId, defaultValue, settingName]);
 
+    useEffect(() => {
+        nodeStates[nodeId].settings[settingName].value = setting;
+    }, [nodeId, setting, settingName]);
+
     return [setting, setSetting];
 }
 
