@@ -10,6 +10,7 @@ import {
     inputNodeTypes,
     modificationNodeTypes,
     outputNodeTypes,
+    setNodeSettings,
     setNodeValues,
 } from "./Nodes/nodes";
 
@@ -129,11 +130,12 @@ export default function Canvas(props) {
                 setNodes(flow.nodes || []);
                 setTimeout(() => {
                     setNodeValues(flow.values);
+                    setNodeSettings(flow.settings);
                     for (const edge of flow.edges) {
                         edge.data = { ...edge.data, removeConnection: createConnection(edge) };
                     }
                     setEdges(flow.edges || []);
-                }, 60);
+                }, 120);
                 setId(restoreId);
                 setName(name);
             }
