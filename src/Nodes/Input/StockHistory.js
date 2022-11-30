@@ -4,7 +4,7 @@ import { useOutput } from "../nodes";
 import { Box } from "@mui/material";
 import { useSocketIoChannel } from "../../backend";
 
-export default function Stock_History() {
+export default function StockHistory() {
     const [companyName, setCompanyName] = useState("Input desired Company Ticker");
     const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_historical_prices");
     const [historical_prices, setStockPriceOutput, outputHndl] = useOutput("Output", "table");

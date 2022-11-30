@@ -31,7 +31,8 @@ import JQNode from "./Modification/JQNode.js";
 import StringArrayBuilderNode from "./Modification/StringArrayBuilderNode";
 import NumberArrayBuilderNode from "./Modification/NumberArrayBuilderNode";
 import BooleanArrayBuilderNode from "./Modification/BooleanArrayBuilderNode";
-import Stock_History from "./Output/StockHistory";
+import StockHistory from "./Input/StockHistory";
+import StockTicker from "./Input/StockTicker";
 
 export const nodeIcons = {
     "CSV File": Code,
@@ -65,8 +66,8 @@ export const inputNodeTypes = {
     "CSV File": CsvNode,
     "JSON File": JsonNode,
     "Text File": TextInputNode,
-    "Stock Ticker": Stock_Ticker,
-    "Stock Historical Output": Stock_History
+    "Stock Ticker": StockTicker,
+    "Stock Historical Output": StockHistory
 };
 
 export const outputNodeTypes = {
