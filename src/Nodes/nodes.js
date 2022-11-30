@@ -27,6 +27,7 @@ import WordCloudChart from "./Output/WordCloudNode";
 import { Tooltip } from "@mui/material";
 import AggregateNode from "./Modification/AggregateNode";
 import PieChart from "./Output/PieChart";
+import JSONParser from "./Modification/JsonParser.js";
 import JQNode from "./Modification/JQNode.js";
 import StringArrayBuilderNode from "./Modification/StringArrayBuilderNode";
 import NumberArrayBuilderNode from "./Modification/NumberArrayBuilderNode";
@@ -52,7 +53,8 @@ export const modificationNodeTypes = {
     "Filter Columns": FilterColumnsNode,
     "Drop Columns": FilterColumnsNode,
     "Text Tokenization": TextTokenization,
-    "Json Parse Node": JQNode,
+    "Json Parse Node": JSONParser,
+    "JQ Node": JQNode,
     "String Array Builder": StringArrayBuilderNode,
     "Number Array Builder": NumberArrayBuilderNode,
     "Boolean Array Builder": BooleanArrayBuilderNode,
@@ -350,6 +352,10 @@ export function useSetting(settingName, defaultValue) {
             value: defaultValue,
         };
     }, [nodeId, defaultValue, settingName]);
+
+    useEffect(() => {
+        nodeStates[nodeId].settings[settingName].value = setting;
+    }, [nodeId, setting, settingName]);
 
     return [setting, setSetting];
 }
