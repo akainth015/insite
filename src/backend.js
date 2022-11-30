@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 import { NodeIdContext } from "./Nodes/nodes";
 import { useCallback, useContext } from "react";
 
-export const backendUrl = "http://localhost:5001/";
+export const backendUrl = "http://localhost:5000/";
 
 export var socket = io(backendUrl, {
     transports: ["websocket"],
@@ -16,7 +16,6 @@ export function useSocketIoChannel(channelName) {
     const nodeId = useContext(NodeIdContext);
 
     function emitOnChannel() {
-        console.log('hello');
         socket.emit(channelName, nodeId, ...arguments);
     }
 
