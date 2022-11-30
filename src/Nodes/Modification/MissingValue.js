@@ -22,11 +22,15 @@ export default function MissingValuesNode() {
                             );
                             break;
                         case "avg":
-                            output = input;
+                            output = structuredClone(input);
                             colsSelected.forEach((colSelect) => {
-                                const avg = input.reduce((avg, row) => avg + row[colSelect] / input.length, 0);
+                                const avg = input
+                                    .map((row) => row[colSelect])
+                                    .filter((it) => it !== undefined && it !== null && !isNaN(it))
+                                    .reduce((avg, val) => avg + val / input.length, 0);
                                 output = output.map((row) => {
-                                    if (!row[colSelect] || isNaN(row[colSelect])) {
+                                    const rowElement = row[colSelect];
+                                    if (rowElement === undefined || rowElement === null || isNaN(rowElement)) {
                                         row[colSelect] = avg;
                                     }
                                     return row;
@@ -34,10 +38,11 @@ export default function MissingValuesNode() {
                             });
                             break;
                         case "zero":
-                            output = input;
+                            output = structuredClone(input);
                             colsSelected.forEach((colSelect) => {
                                 output = input.map((row) => {
-                                    if (!row[colSelect] || isNaN(row[colSelect])) {
+                                    const rowElement = row[colSelect];
+                                    if (rowElement === undefined || rowElement === null || isNaN(rowElement)) {
                                         row[colSelect] = 0;
                                     }
                                     return row;
