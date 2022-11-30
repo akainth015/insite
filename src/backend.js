@@ -16,7 +16,6 @@ export function useSocketIoChannel(channelName) {
     const nodeId = useContext(NodeIdContext);
 
     function emitOnChannel() {
-        console.log('hello');
         socket.emit(channelName, nodeId, ...arguments);
     }
 
