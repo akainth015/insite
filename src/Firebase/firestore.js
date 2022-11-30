@@ -1,6 +1,6 @@
 import { database } from "../firebase";
 import { doc, updateDoc, deleteField, setDoc, collection, getDocFromServer, deleteDoc } from "firebase/firestore";
-import { getAllCurrentValues } from "../Nodes/nodes";
+import { getAllCurrentValues, getAllSettingValues } from "../Nodes/nodes";
 
 export async function getAllFlows(auth) {
     const userId = auth.uid;
@@ -24,11 +24,14 @@ export async function getFlow(auth, id) {
 }
 
 export async function saveFlow(auth, id, name, flowObject) {
-    console.log(flowObject);
     const userId = auth.uid;
     const docRef = doc(database, userId, id);
     const date = new Date();
-    await setDoc(docRef, { ...flowObject, values: getAllCurrentValues() }, { merge: true });
+    await setDoc(
+        docRef,
+        { ...flowObject, values: getAllCurrentValues(), settings: getAllSettingValues() },
+        { merge: true }
+    );
     await setDoc(
         doc(database, userId, "flowNames"),
         {
