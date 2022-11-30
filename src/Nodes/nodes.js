@@ -97,10 +97,8 @@ export function setNodeSettings(state) {
     for (const source of Object.keys(state)) {
         for (const sourceHandle of Object.keys(state[source])) {
             nodeStates[source].settings[sourceHandle].onUpdate(state[source][sourceHandle]);
-            console.log(state[source][sourceHandle]);
         }
     }
-    console.log(nodeStates);
 }
 
 export const NodeIdContext = createContext(null);
