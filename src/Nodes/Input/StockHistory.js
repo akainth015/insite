@@ -1,11 +1,11 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import { useOutput } from "../nodes";
-import { Box } from "@mui/material";
+import { useEffect } from "react";
+import { useOutput, useSetting } from "../nodes";
+import { Paper, TextField, Button } from "@mui/material";
 import { useSocketIoChannel } from "../../backend";
 
 export default function StockHistory() {
-    const [companyName, setCompanyName] = useState("Input desired Company Ticker");
+    const [companyName, setCompanyName] = useSetting("ticker", "AAPL");
     const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_historical_prices");
     const [historical_prices, setStockPriceOutput, outputHndl] = useOutput("Output", "table");
 
@@ -29,25 +29,16 @@ export default function StockHistory() {
     }
 
     return (
-        <Box
-            display="flex"
-            flexDirection="column"
-            sx={{
-                backgroundColor: "white",
-                width: 300,
-                height: 90,
-                padding: 2,
-                borderRadius: 2,
-            }}
-        >
+        <Paper sx={{ padding: 2 }}>
             <form onSubmit={handleSubmit}>
-                <label>
-                    Company Ticker:
-                    <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
-                </label>
-                <input type="submit" value="Submit" />
+                <TextField
+                    label={"Company Ticker"}
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                />
             </form>
+            <Button type="submit" value="Submit" />
             {outputHndl}
-        </Box>
+        </Paper>
     );
 }

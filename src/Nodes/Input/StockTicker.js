@@ -1,18 +1,23 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useOutput } from "../nodes";
-import { Box } from "@mui/material";
+import { useOutput, useSetting } from "../nodes";
+import { Paper, TextField, Button } from "@mui/material";
 import { useSocketIoChannel } from "../../backend";
 
 export default function StockTicker() {
-    const [companyName, setCompanyName] = useState("Input desired Company Ticker");
+    const [companyName, setCompanyName] = useSetting("ticker", "AAPL");
     const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_market_price");
     const [price, setStockPriceOutput, outputHndl] = useOutput("Output", "number", "Input desired Company Ticker");
 
 
-    const handleSubmit = () => {
-        emitStockPriceSubscription(companyName);
+
+    const handleSubmit = (value) => {
+        const interval = setInterval(() => {
+            emitStockPriceSubscription(companyName);
+        }, 1000);    
     };
+
+
 
     useEffect(() => {
         return registerToUpdates((data) => {
@@ -20,26 +25,19 @@ export default function StockTicker() {
         });
     }, [registerToUpdates, companyName]);
 
+
     return (
-        <Box
-            display="flex"
-            flexDirection="column"
-            sx={{
-                backgroundColor: "white",
-                width: 300,
-                height: 90,
-                padding: 2,
-                borderRadius: 2,
-            }}
-        >
+        <Paper sx={{ padding: 2 }}>
             <form onSubmit={handleSubmit}>
-                <label>
-                    Company Ticker:
-                    <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
-                </label>
-                <input type="submit" value="Submit" />
+                <TextField
+                    id = "stockTicker"
+                    label={"Company Ticker"}
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                />
+            <input type="submit" value="Submit" />
             </form>
             {outputHndl}
-        </Box>
+        </Paper>
     );
 }
