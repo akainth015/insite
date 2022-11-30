@@ -28,6 +28,9 @@ import { Tooltip } from "@mui/material";
 import AggregateNode from "./Modification/AggregateNode";
 import PieChart from "./Output/PieChart";
 import JQNode from "./Modification/JQNode.js";
+import StringArrayBuilderNode from "./Modification/StringArrayBuilderNode";
+import NumberArrayBuilderNode from "./Modification/NumberArrayBuilderNode";
+import BooleanArrayBuilderNode from "./Modification/BooleanArrayBuilderNode";
 
 export const nodeIcons = {
     "CSV File": Code,
@@ -50,6 +53,9 @@ export const modificationNodeTypes = {
     "Drop Columns": FilterColumnsNode,
     "Text Tokenization": TextTokenization,
     "Json Parse Node": JQNode,
+    "String Array Builder": StringArrayBuilderNode,
+    "Number Array Builder": NumberArrayBuilderNode,
+    "Boolean Array Builder": BooleanArrayBuilderNode,
 };
 
 export const inputNodeTypes = {
@@ -67,7 +73,7 @@ export const outputNodeTypes = {
     Correlation: Correlation,
     "Histogram Chart Display": HistogramChart,
     "Line Chart Display": LineChart,
-    "World Cloud Display": WordCloudChart,
+    "Word Cloud Display": WordCloudChart,
     "Pie Chart": PieChart,
 };
 
@@ -166,7 +172,7 @@ export function useOutput(label, outputType, initialOutput = null) {
 
     function isValidConnection({ target, targetHandle }) {
         const inputTypes = nodeStates[target].backtraces[targetHandle].inputTypes;
-        return inputTypes === "any" || inputTypes.indexOf(outputType) > -1;
+        return inputTypes === "any" || outputType === "any" || inputTypes.indexOf(outputType) > -1;
     }
 
     const rightOffset = Object.keys(nodeStates[nodeId].outputs).indexOf(label);
@@ -217,7 +223,7 @@ export function useInput(label, inputTypes) {
 
     function isValidConnection({ source, sourceHandle }) {
         const oType = nodeStates[source].outputs[sourceHandle].outputType;
-        return inputTypes === "any" || inputTypes.indexOf(oType) > -1;
+        return inputTypes === "any" || oType === "any" || inputTypes.indexOf(oType) > -1;
     }
 
     const leftOffset = Object.keys(nodeStates[nodeId].backtraces).indexOf(label);
@@ -293,7 +299,7 @@ export function useStrictInput(label, inputTypes) {
 
     function isValidConnection({ source, sourceHandle }) {
         const oType = nodeStates[source].outputs[sourceHandle].outputType;
-        return inputTypes === "any" || inputTypes.indexOf(oType) > -1;
+        return inputTypes === "any" || oType === "any" || inputTypes.indexOf(oType) > -1;
     }
 
     const leftOffset = Object.keys(nodeStates[nodeId].backtraces).indexOf(label);

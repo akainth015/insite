@@ -29,7 +29,7 @@ const defaultData = {
 const emptyArray = [];
 
 export default function PieChart() {
-    var [input, inputHandl, inputType] = useInput("Pie chart", ["table", "string[]"]);
+    var [input, inputHandl, inputType] = useInput("Pie chart", ["table", "string[]", "number[]"]);
     const [filterColumns, setFilterColumns] = useSetting("filterColumns", emptyArray);
     var [data, setOutput] = useState(defaultData);
 
@@ -44,6 +44,7 @@ export default function PieChart() {
                     onTable(input);
                     break;
                 case "string[]":
+                case "number[]":
                     onList(input);
                     break;
                 default:
