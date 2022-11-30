@@ -1,11 +1,11 @@
 import { FormControl, Typography, MenuItem, Paper, Select, InputLabel } from "@mui/material";
-import { useInput, useOutput } from "../nodes";
+import { useInput, useOutput, useSetting } from "../nodes";
 import React, { useEffect, useState } from "react";
 import { backendUrl } from "../../backend";
 
 function AnalysisNode() {
     const [input, inputHndl] = useInput("input", ["string"]);
-    const [analysisType, setAnalysisType] = useState("sentiment");
+    const [analysisType, setAnalysisType] = useSetting("analysisType", "sentiment");
     const [, setOutput, outputHndl] = useOutput("output", "object", null);
 
     useEffect(() => {
