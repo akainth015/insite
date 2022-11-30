@@ -1,0 +1,139 @@
+{
+    "agreement": "AGREEMENT",
+    "confidence": "98",
+    "irony": "NONIRONIC",
+    "model": "general_en",
+    "score_tag": "N+",
+    "sentence_list": [
+        {
+            "agreement": "AGREEMENT",
+            "bop": "y",
+            "confidence": "98",
+            "endp": "27",
+            "inip": "0",
+            "score_tag": "N+",
+            "segment_list": [
+                {
+                    "agreement": "AGREEMENT",
+                    "confidence": "98",
+                    "endp": "26",
+                    "inip": "0",
+                    "polarity_term_list": [
+                        {
+                            "confidence": "98",
+                            "endp": "19",
+                            "inip": "15",
+                            "score_tag": "N+",
+                            "text": "(very) rough"
+                        }
+                    ],
+                    "score_tag": "N+",
+                    "segment_type": "main",
+                    "text": "Today was very rough for us"
+                }
+            ],
+            "sentimented_concept_list": [],
+            "sentimented_entity_list": [],
+            "text": "Today was very rough for us."
+        },
+        {
+            "agreement": "AGREEMENT",
+            "bop": "n",
+            "confidence": "100",
+            "endp": "73",
+            "inip": "29",
+            "score_tag": "NONE",
+            "segment_list": [
+                {
+                    "agreement": "AGREEMENT",
+                    "confidence": "100",
+                    "endp": "73",
+                    "inip": "29",
+                    "polarity_term_list": [],
+                    "score_tag": "NONE",
+                    "segment_type": "main",
+                    "sentimented_concept_list": [
+                        {
+                            "endp": "73",
+                            "form": "stratum",
+                            "id": "1c74dbbf1f",
+                            "inip": "69",
+                            "score_tag": "NONE",
+                            "type": "Top",
+                            "variant": "class"
+                        },
+                        {
+                            "endp": "73",
+                            "form": "stratum",
+                            "id": "24eaddd1c4",
+                            "inip": "69",
+                            "score_tag": "NONE",
+                            "type": "Top",
+                            "variant": "class"
+                        },
+                        {
+                            "endp": "73",
+                            "form": "class",
+                            "id": "5ae831ee48",
+                            "inip": "69",
+                            "score_tag": "NONE",
+                            "type": "Top",
+                            "variant": "class"
+                        }
+                    ],
+                    "text": "Not sure if we can make it tomorrow for class"
+                }
+            ],
+            "sentimented_concept_list": [
+                {
+                    "form": "stratum",
+                    "id": "1c74dbbf1f",
+                    "score_tag": "NONE",
+                    "type": "Top"
+                },
+                {
+                    "form": "stratum",
+                    "id": "24eaddd1c4",
+                    "score_tag": "NONE",
+                    "type": "Top"
+                },
+                {
+                    "form": "class",
+                    "id": "5ae831ee48",
+                    "score_tag": "NONE",
+                    "type": "Top"
+                }
+            ],
+            "sentimented_entity_list": [],
+            "text": "Not sure if we can make it tomorrow for class"
+        }
+    ],
+    "sentimented_concept_list": [
+        {
+            "form": "stratum",
+            "id": "1c74dbbf1f",
+            "score_tag": "NONE",
+            "type": "Top"
+        },
+        {
+            "form": "stratum",
+            "id": "24eaddd1c4",
+            "score_tag": "NONE",
+            "type": "Top"
+        },
+        {
+            "form": "class",
+            "id": "5ae831ee48",
+            "score_tag": "NONE",
+            "type": "Top"
+        }
+    ],
+    "sentimented_entity_list": [],
+    "status": {
+        "code": "0",
+        "msg": "OK",
+        "credits": "1",
+        "remaining_credits": "19713"
+    },
+    "subjectivity": "OBJECTIVE"
+}
