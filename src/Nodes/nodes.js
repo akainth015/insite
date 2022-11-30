@@ -91,6 +91,14 @@ export function setNodeValues(state) {
     }
 }
 
+export function setNodeSettings(state) {
+    for (const source of Object.keys(state)) {
+        for (const sourceHandle of Object.keys(state[source])) {
+            nodeStates[source].settings[sourceHandle].value = state[source][sourceHandle];
+        }
+    }
+}
+
 export const NodeIdContext = createContext(null);
 
 export function createNode(nodeId) {
@@ -110,6 +118,18 @@ export function getAllCurrentValues() {
         for (const sourceHandle of Object.keys(nodeStates[source].outputs)) {
             returnObject[source] = {};
             returnObject[source][sourceHandle] = nodeStates[source].outputs[sourceHandle].value;
+        }
+    }
+    return returnObject;
+}
+
+export function getAllSettingValues() {
+    const returnObject = {};
+    for (const source of Object.keys(nodeStates)) {
+        for (const sourceHandle of Object.keys(nodeStates[source].settings)) {
+            returnObject[source] = {};
+            returnObject[source][sourceHandle] = nodeStates[source].settings[sourceHandle].value;
+            console.log(nodeStates[source].settings[sourceHandle]);
         }
     }
     return returnObject;
