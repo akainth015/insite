@@ -10,14 +10,18 @@ export default function StockTicker() {
     const [price, setStockPriceOutput, outputHndl] = useOutput("Output", "number", "Input desired Company Ticker");
 
 
+    const intervalId = useRef(null);
 
-    const handleSubmit = (value) => {
-        const interval = setInterval(() => {
-            emitStockPriceSubscription(companyName);
-        }, 1000);    
-    };
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
-
+        if (intervalId.current) {
+            clearInterval(intervalId.current);
+        }
+        intervalId.current = setInterval(() => {
+            emitStockPriceSubscription(companyName, setStockPriceOutput);
+        }, 5000);
+    }
 
     useEffect(() => {
         return registerToUpdates((data) => {
