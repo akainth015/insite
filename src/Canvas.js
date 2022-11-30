@@ -136,7 +136,7 @@ export default function Canvas(props) {
                         edge.data = { ...edge.data, removeConnection: createConnection(edge) };
                     }
                     setEdges(flow.edges || []);
-                }, 60);
+                }, 120);
                 setId(restoreId);
                 setName(name);
             }
