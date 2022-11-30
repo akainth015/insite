@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useEffect, useState } from "react";
 import { useOutput, useSetting } from "../nodes";
-import { Paper, TextField, Button } from "@mui/material";
+import { Button, FormControl, Paper, TextField } from "@mui/material";
 import { useSocketIoChannel } from "../../backend";
 
 export default function StockTicker() {
     const [companyName, setCompanyName] = useSetting("ticker", "AAPL");
-    const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_market_price");
-    const [price, setStockPriceOutput, outputHndl] = useOutput("Output", "number", "Input desired Company Ticker");
+    const [emitStockPriceSubscription] = useSocketIoChannel("get_market_price");
+    const [, setStockPriceOutput, outputHndl] = useOutput("Output", "number", "Input desired Company Ticker");
 
 
     const intervalId = useRef(null);
@@ -23,23 +23,22 @@ export default function StockTicker() {
         }, 5000);
     }
 
-    useEffect(() => {
-        return registerToUpdates((data) => {
-            setStockPriceOutput(data);
-        });
-    }, [registerToUpdates, companyName]);
-
-
     return (
         <Paper sx={{ padding: 2 }}>
             <form onSubmit={handleSubmit}>
-                <TextField
-                    id = "stockTicker"
-                    label={"Company Ticker"}
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                />
-            <input type="submit" value="Submit" />
+            <FormControl fullWidth>
+                    <TextField
+                        id="stockTicker"
+                        label={"Company Ticker"}
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                    />
+                </FormControl>
+                <FormControl fullWidth sx={{ pt: 2 }}>
+                    <Button type="submit" variant="outlined">
+                        Subscribe
+                    </Button>
+                </FormControl>
             </form>
             {outputHndl}
         </Paper>
