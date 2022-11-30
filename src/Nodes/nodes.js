@@ -27,6 +27,7 @@ import WordCloudChart from "./Output/WordCloudNode";
 import { Tooltip } from "@mui/material";
 import AggregateNode from "./Modification/AggregateNode";
 import PieChart from "./Output/PieChart";
+import JQNode from "./Modification/JQNode.js";
 
 export const nodeIcons = {
     "CSV File": Code,
@@ -48,6 +49,7 @@ export const modificationNodeTypes = {
     "Filter Columns": FilterColumnsNode,
     "Drop Columns": FilterColumnsNode,
     "Text Tokenization": TextTokenization,
+    "Json Parse Node": JQNode,
 };
 
 export const inputNodeTypes = {

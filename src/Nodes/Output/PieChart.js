@@ -1,11 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
-import { CardContent } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Box, CardContent, Typography } from "@mui/material";
 import { useInput, useSetting } from "../nodes";
-import { Box, Typography } from "@mui/material";
 import ColumnSelect from "../../Components/ColumnSelect";
-import { filter } from "d3";
 
 const CHART_COLORS = {
     red: "rgb(255, 99, 132)",
