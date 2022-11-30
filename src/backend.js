@@ -17,6 +17,7 @@ export function useSocketIoChannel(channelName) {
 
     function emitOnChannel() {
         socket.emit(channelName, nodeId, ...arguments);
+        
     }
 
     function register(eventHandler) {
