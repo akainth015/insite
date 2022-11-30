@@ -32,9 +32,11 @@ export default function MinMaxNormalizationNode() {
     useEffect(() => {
         if (input) {
             let output = input;
-            colsSelected.forEach((col) => {
-                normalize(output, col);
-            });
+            if (output.length > 0) {
+                colsSelected.forEach((col) => {
+                    normalize(output, col);
+                });
+            }
             output.columns = input ? input.columns : [];
             setOutput(output);
         }
