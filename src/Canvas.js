@@ -130,7 +130,6 @@ export default function Canvas(props) {
                 setNodes(flow.nodes || []);
                 setTimeout(() => {
                     setNodeValues(flow.values);
-                    console.log(flow);
                     setNodeSettings(flow.settings);
                     for (const edge of flow.edges) {
                         edge.data = { ...edge.data, removeConnection: createConnection(edge) };
