@@ -1,11 +1,11 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useOutput, useSetting } from "../nodes";
 import { Paper, TextField, Button } from "@mui/material";
 import { useSocketIoChannel } from "../../backend";
 
 export default function StockHistory() {
-    const [companyName, setCompanyName] = useSetting("ticker", "AAPL");
+    const [companyName, setCompanyName] = useState("AAPL", "AAPL");
     const [emitStockPriceSubscription, registerToUpdates] = useSocketIoChannel("get_historical_prices");
     const [historical_prices, setStockPriceOutput, outputHndl] = useOutput("Output", "table");
 
@@ -36,8 +36,8 @@ export default function StockHistory() {
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
                 />
+                <input type="submit" value="Submit" />
             </form>
-            <Button type="submit" value="Submit" />
             {outputHndl}
         </Paper>
     );

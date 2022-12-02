@@ -41,8 +41,6 @@ export default function StockTicker() {
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
                     />
-                </FormControl>
-                <FormControl fullWidth sx={{ pt: 2 }}>
                     <Button type="submit" variant="outlined">
                         Subscribe
                     </Button>
