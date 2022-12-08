@@ -49,9 +49,21 @@
     "prettier": "2.8.1"
   },
   "lint-staged": {
-    "**/*.js": ["eslint", "prettier --write"],
-    "**/*.jsx": ["eslint", "prettier --write"],
-    "**/*.ts": ["eslint", "prettier --write"],
-    "**/*.tsx": ["eslint", "prettier --write"]
+    "**/*.js": [
+      "eslint",
+      "prettier --write"
+    ],
+    "**/*.jsx": [
+      "eslint",
+      "prettier --write"
+    ],
+    "**/*.ts": [
+      "eslint",
+      "prettier --write"
+    ],
+    "**/*.tsx": [
+      "eslint",
+      "prettier --write"
+    ]
   }
 }
